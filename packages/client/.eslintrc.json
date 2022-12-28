@@ -1,10 +1,23 @@
 {
-  "extends": ["plugin:@nrwl/nx/react", "../../.eslintrc.json"],
+  "extends": ["plugin:@nrwl/nx/react", "../../.eslintrc.json", "airbnb", "airbnb-typescript"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
+      "rules": {
+		"jsx-quotes": ["error", "prefer-single"],
+		"react/react-in-jsx-scope": 0,
+		"import/no-named-as-default": 0,
+		"indent": ["error", "tab"],
+		"no-tabs": 0,
+		"@typescript-eslint/indent": ["error", "tab"],
+		"react/jsx-indent": ["error", "tab"],
+		"react/jsx-indent-props": ["error", "tab"],
+		"import/prefer-default-export": 0
+	  },
+	  "parserOptions": {
+        "project": ["packages/client/tsconfig.*?.json"]
+      }
     },
     {
       "files": ["*.ts", "*.tsx"],

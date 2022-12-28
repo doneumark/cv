@@ -5,20 +5,23 @@
  Delete this file and get started with your project!
  * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
- export function AboutPage({ title }: { title: string }) {
+export function AboutPage({ title }: { title: string }) {
 	return (
-	  <div className="wrapper">
-		  <div className="container">
-			<div id="welcome">
-			  <h1>
-				<span> Hello there, </span>
-				Welcome {title} 👋
-			  </h1>
+		<div className='wrapper'>
+			<div className='container'>
+				<div id='welcome'>
+					<h1>
+						<span> Hello there, </span>
+						Welcome
+						{' '}
+						{title}
+						{' '}
+						👋
+					</h1>
+				</div>
 			</div>
-		  </div>
 		</div>
 	);
-  }
-  
-  export default AboutPage;
-  
+}
+
+export default AboutPage;

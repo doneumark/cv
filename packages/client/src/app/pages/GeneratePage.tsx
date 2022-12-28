@@ -1,24 +1,27 @@
 /*
- * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- This is a starter component and can be deleted.
- * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- Delete this file and get started with your project!
- * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
- export function GeneratePage({ title }: { title: string }) {
+* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+This is a starter component and can be deleted.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Delete this file and get started with your project!
+* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*/
+export function GeneratePage({ title }: { title: string }) {
 	return (
-	  <div className="wrapper">
-		  <div className="container">
-			<div id="welcome">
-			  <h1>
-				<span> Hello there, </span>
-				Welcome {title} 👋
-			  </h1>
+		<div className='wrapper'>
+			<div className='container'>
+				<div id='welcome'>
+					<h1>
+						<span> Hello there, </span>
+						Welcome
+						{' '}
+						{title}
+						{' '}
+						👋
+					</h1>
+				</div>
 			</div>
-		  </div>
 		</div>
 	);
-  }
-  
-  export default GeneratePage;
-  
+}
+
+export default GeneratePage;
