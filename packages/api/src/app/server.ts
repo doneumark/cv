@@ -5,10 +5,11 @@
 
 import * as express from 'express';
 import * as path from 'path';
-import prisma from './prisma';
-import { signIn, addAuthToApp, AuthRequest } from './services/auth';
-import openAi from './services/openAi';
-import { createUser } from './services/user';
+import AuthRouter from './routers/AuthRouter';
+import UserRouter from './routers/UserRouter';
+import JobRouter from './routers/JobRouter';
+import CvRouter from './routers/CvRouter';
+import { addAuthToApp } from './services/auth';
 
 export const run = () => {
 	const app = express();
@@ -28,108 +29,10 @@ export const run = () => {
 		}
 	});
 
-	app.get('/api/me', async (req, res) => {
-		try {
-			res.status(200).send(req.user);
-		} catch (err) {
-			res.status(400).send(err.message);
-		}
-	});
-
-	app.post('/api/signup', async (req, res) => {
-		try {
-			const user = await createUser(req.body);
-
-			req.login(user, (err) => {
-				if (err) {
-					res.status(400).send(err.message);
-					return;
-				}
-
-				res.status(200).send(user);
-			});
-		} catch (err) {
-			res.status(400).send(err.message);
-		}
-	});
-
-	app.post('/api/login', signIn, (req, res) => {
-		try {
-			res.status(200).send(req.user);
-		} catch (err) {
-			res.status(400).send(err.message);
-		}
-	});
-
-	app.post('/api/logout', (req, res) => {
-		try {
-			req.logout((err) => {
-				if (err) {
-					res.status(400).send(err.message);
-					return;
-				}
-
-				res.status(200).send();
-			});
-		} catch (err) {
-			res.status(400).send(err.message);
-		}
-	});
-
-	app.post('/api/sync-from-linkedin', async (req: AuthRequest, res) => {
-		try {
-			const { linkedinUsername } = req.user;
-			if (!linkedinUsername) {
-				throw new Error('Username is required');
-			}
-
-			const user = await prisma.user.findUnique({
-				where: { id: req.user.id },
-			});
-
-			await user.syncFromLinkedin();
-
-			res.status(200).send();
-		} catch (err) {
-			res.status(400).send(err.message);
-		}
-	});
-
-	app.post('/api/job', async (req, res) => {
-		try {
-			const { title, description } = req.body;
-
-			const job = await prisma.job.create({
-				data: {
-					title,
-					description,
-					userId: 'asdsa',
-				},
-			});
-
-			res.status(200).send(job);
-		} catch (err) {
-			res.status(400).send(err.message);
-		}
-	});
-
-	app.post('/api/cv', async (req, res) => {
-		try {
-			const { linkedinData, jobData } = req.body;
-			const prompt = `for this job description: ${jobData}\n\nthis is my details in  json format: ${JSON.stringify(
-				linkedinData,
-			)}\n\nwrite me a CV in html:`;
-			const completion = await openAi.createCompletion({
-				model: 'text-davinci-003',
-				prompt,
-			// temperature: 0.9,
-			});
-
-			res.status(200).send(completion);
-		} catch (err) {
-			res.status(400).send(err.message);
-		}
-	});
+	app.use('/api', AuthRouter);
+	app.use('/api/user', UserRouter);
+	app.use('/api/jobs', JobRouter);
+	app.use('/api/cv', CvRouter);
 
 	const port = process.env.port || 3333;
 	const server = app.listen(port, () => {

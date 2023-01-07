@@ -54,6 +54,15 @@ passport.deserializeUser(async (user: { id: string }, cb) => {
 
 export const signIn = passport.authenticate('local');
 
+export const authenticate = (req, res, next) => {
+	if (req.isAuthenticated()) {
+		next();
+		return;
+	}
+
+	res.status(401).send('Unauthorized');
+};
+
 export const addAuthToApp = (app) => {
 	app.use(session({
 		secret: 'keyboard cat',

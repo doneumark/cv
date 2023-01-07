@@ -7,7 +7,7 @@ import { useRecoilValue, useRecoilState } from 'recoil';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import JobsPage from './pages/JobsPage';
-import LinkedinPage from './pages/LinkedinPage';
+import ProfilePage from './pages/ProfilePage';
 import CvPage from './pages/CvPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -62,7 +62,7 @@ export function App() {
 					user
 						? (
 							<>
-								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/linkedin'>Linkedin</NavLink>
+								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/profile'>Profile</NavLink>
 								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/jobs'>Jobs</NavLink>
 								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/cv'>CV</NavLink>
 								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/logout'>Logout</NavLink>
@@ -82,10 +82,10 @@ export function App() {
 					<Route path='/login' element={<LoginPage />} />
 					<Route path='/signup' element={<SignupPage />} />
 					<Route
-						path='/linkedin'
+						path='/profile'
 						element={(
 							<ProtectedRoute>
-								<LinkedinPage />
+								<ProfilePage />
 							</ProtectedRoute>
 						)}
 					/>

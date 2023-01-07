@@ -164,7 +164,7 @@ const getLinkedinDataFromUsername = async (username: string): Promise<LinkedinDa
 	}
 };
 
-export function LinkedinPage() {
+export function ProfilePage() {
 	const [username, setUsername] = useState('');
 	const [linkedinData, setLinkedinData] = useState<LinkedinData>(null);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -218,4 +218,4 @@ export function LinkedinPage() {
 	);
 }
 
-export default LinkedinPage;
+export default ProfilePage;
