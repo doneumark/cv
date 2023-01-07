@@ -13,7 +13,9 @@
 		"@typescript-eslint/indent": ["error", "tab"],
 		"react/jsx-indent": ["error", "tab"],
 		"react/jsx-indent-props": ["error", "tab"],
-		"import/prefer-default-export": 0
+		"import/prefer-default-export": 0,
+		"react/require-default-props": 0,
+		"react/button-has-type": 0
 	  },
 	  "parserOptions": {
         "project": ["packages/client/tsconfig.*?.json"]

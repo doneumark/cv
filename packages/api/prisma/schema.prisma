@@ -1,13 +1,123 @@
 generator client {
-  provider        = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["clientExtensions"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./db.sql"
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-model Todo {
-  id String @id @default(cuid())
-  @@map("todos")
+model User {
+    id               String              @id @default(uuid())
+    email            String              @unique
+    name             String
+    password         String
+    linkedinUsername String?
+    profile          UserProfile?
+    jobs             Job[]
+    experiences      UserExperience[]
+    educations       UserEducation[]
+    projects         UserProject[]
+    volunteerWorks   UserVolunteerWork[]
+    createdAt        DateTime            @default(now())
+    updatedAt        DateTime            @updatedAt
+}
+
+model Session {
+    id        String   @id
+    sid       String   @unique
+    data      String
+    expiresAt DateTime
+}
+
+model Job {
+    id          String   @id @default(uuid())
+    title       String
+    description String?
+    userId      String
+    user        User     @relation(fields: [userId], references: [id])
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model UserProfile {
+    id         String   @id @default(uuid())
+    occupation String?
+    headline   String?
+    summary    String?
+    userId     String   @unique
+    user       User     @relation(fields: [userId], references: [id])
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}
+
+model UserExperience {
+    id            String   @id @default(uuid())
+    title         String
+    description   String?
+    company       String?
+    startsAtDay   Int
+    startsAtMonth Int
+    startsAtYear  Int
+    endsAtDay     Int?
+    endsAtMonth   Int?
+    endsAtYear    Int?
+    userId        String
+    user          User     @relation(fields: [userId], references: [id])
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+}
+
+model UserEducation {
+    id            String   @id @default(uuid())
+    school        String
+    description   String?
+    field         String?
+    degreeName    String?
+    grade         Int?
+    startsAtDay   Int
+    startsAtMonth Int
+    startsAtYear  Int
+    endsAtDay     Int?
+    endsAtMonth   Int?
+    endsAtYear    Int?
+    userId        String
+    user          User     @relation(fields: [userId], references: [id])
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+}
+
+model UserProject {
+    id            String   @id @default(uuid())
+    title         String
+    description   String?
+    startsAtDay   Int
+    startsAtMonth Int
+    startsAtYear  Int
+    endsAtDay     Int?
+    endsAtMonth   Int?
+    endsAtYear    Int?
+    userId        String
+    user          User     @relation(fields: [userId], references: [id])
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+}
+
+model UserVolunteerWork {
+    id            String   @id @default(uuid())
+    title         String
+    description   String?
+    cause         String?
+    company       String?
+    startsAtDay   Int
+    startsAtMonth Int
+    startsAtYear  Int
+    endsAtDay     Int?
+    endsAtMonth   Int?
+    endsAtYear    Int?
+    userId        String
+    user          User     @relation(fields: [userId], references: [id])
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 }
