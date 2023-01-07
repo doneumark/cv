@@ -8,9 +8,10 @@ import * as path from 'path';
 import prisma from './prisma';
 import { signIn, addAuthToApp, AuthRequest } from './services/auth';
 import openAi from './services/openAi';
+import { createUser } from './services/user';
 
 export const run = () => {
-	const app = express.default();
+	const app = express();
 
 	app.set('trust proxy', 1); // trust first proxy
 
@@ -27,15 +28,49 @@ export const run = () => {
 		}
 	});
 
-	app.post('/login', async (req: AuthRequest, res, next) => {
+	app.get('/api/me', async (req, res) => {
 		try {
-			const { email, password } = req.body;
-			if (!email || !password) {
-				throw new Error('Missing email or password');
-			}
+			res.status(200).send(req.user);
+		} catch (err) {
+			res.status(400).send(err.message);
+		}
+	});
 
-			const user = await signIn(req, res, next);
-			res.status(200).send(user);
+	app.post('/api/signup', async (req, res) => {
+		try {
+			const user = await createUser(req.body);
+
+			req.login(user, (err) => {
+				if (err) {
+					res.status(400).send(err.message);
+					return;
+				}
+
+				res.status(200).send(user);
+			});
+		} catch (err) {
+			res.status(400).send(err.message);
+		}
+	});
+
+	app.post('/api/login', signIn, (req, res) => {
+		try {
+			res.status(200).send(req.user);
+		} catch (err) {
+			res.status(400).send(err.message);
+		}
+	});
+
+	app.post('/api/logout', (req, res) => {
+		try {
+			req.logout((err) => {
+				if (err) {
+					res.status(400).send(err.message);
+					return;
+				}
+
+				res.status(200).send();
+			});
 		} catch (err) {
 			res.status(400).send(err.message);
 		}
@@ -48,7 +83,11 @@ export const run = () => {
 				throw new Error('Username is required');
 			}
 
-			await req.user.syncFromLinkedin();
+			const user = await prisma.user.findUnique({
+				where: { id: req.user.id },
+			});
+
+			await user.syncFromLinkedin();
 
 			res.status(200).send();
 		} catch (err) {
@@ -80,7 +119,6 @@ export const run = () => {
 			const prompt = `for this job description: ${jobData}\n\nthis is my details in  json format: ${JSON.stringify(
 				linkedinData,
 			)}\n\nwrite me a CV in html:`;
-			// console.log(prompt);
 			const completion = await openAi.createCompletion({
 				model: 'text-davinci-003',
 				prompt,
