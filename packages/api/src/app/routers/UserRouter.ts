@@ -6,11 +6,40 @@ const UserRouter = express.Router();
 
 UserRouter.get('/', authenticate, async (req: AuthRequest, res) => {
 	try {
-		const profile = await prisma.user.findUnique({
+		const user = await prisma.user.findUnique({
 			where: { id: req.user.id },
+			include: {
+				profile: true,
+				educations: true,
+				experiences: true,
+				projects: true,
+				volunteerWorks: true,
+			},
 		});
 
-		res.status(200).send(profile);
+		res.status(200).send(user);
+	} catch (err) {
+		res.status(400).send(err.message);
+	}
+});
+
+UserRouter.put('/', authenticate, async (req: AuthRequest, res) => {
+	try {
+		const {
+			email, fullName, password, linkedinUsername,
+		} = req.body;
+
+		const user = await prisma.user.update({
+			where: { id: req.user.id },
+			data: {
+				email,
+				fullName,
+				password,
+				linkedinUsername,
+			},
+		});
+
+		res.status(200).send(user);
 	} catch (err) {
 		res.status(400).send(err.message);
 	}
@@ -27,9 +56,8 @@ UserRouter.post('/linkedin', authenticate, async (req: AuthRequest, res) => {
 			where: { id: req.user.id },
 		});
 
-		await user.syncFromLinkedin();
-
-		res.status(200).send();
+		const syncedUser = await user.syncFromLinkedin();
+		res.status(200).send(syncedUser);
 	} catch (err) {
 		res.status(400).send(err.message);
 	}

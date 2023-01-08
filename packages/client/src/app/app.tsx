@@ -32,12 +32,11 @@ function ProtectedRoute({ children }: ProtectedRoutesProps): React.ReactElement 
 export function App() {
 	const [user, setUser] = useRecoilState(UserState);
 	const { isLoading } = useQuery(
-		['me'],
+		'me',
 		async () => {
 			try {
-				const resUser = await axios.get('/api/me', { withCredentials: true });
-				console.log('ME');
-				setUser(resUser.data);
+				const resMe = await axios.get('/api/me', { withCredentials: true });
+				setUser(resMe.data);
 			} catch (err) {
 				setUser(null);
 			}
@@ -78,7 +77,7 @@ export function App() {
 			</div>
 			<div className='py-4'>
 				<Routes>
-					<Route path='/' element={<Navigate to='/linkedin' />} />
+					<Route path='/' element={<Navigate to='/profile' />} />
 					<Route path='/login' element={<LoginPage />} />
 					<Route path='/signup' element={<SignupPage />} />
 					<Route

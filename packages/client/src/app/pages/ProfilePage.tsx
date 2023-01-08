@@ -1,12 +1,11 @@
-import { useState, useCallback, useEffect } from 'react';
-import lzString from 'lz-string';
+import { useState, useCallback } from 'react';
+import { useQuery } from 'react-query';
 import axios from 'axios';
+import { useForm } from 'react-hook-form';
 import Button from '../components/Button';
-import Input from '../components/Input';
 import Table from '../components/Table';
-import { LinkedinDate, LinkedinData } from '../types/linkedin';
 
-const parseLinkedinDate = (linkedinDate: LinkedinDate) => {
+const parseLinkedinDate = (linkedinDate) => {
 	if (!linkedinDate) {
 		return null;
 	}
@@ -15,23 +14,15 @@ const parseLinkedinDate = (linkedinDate: LinkedinDate) => {
 	return `${day}/${month}/${year}`;
 };
 
-type LinkedinProfileProps = {
-	data: LinkedinData;
-};
-
-function LinkedinProfile({ data }: LinkedinProfileProps) {
+function User({ data }) {
 	if (!data) {
 		return null;
 	}
 
 	const {
-		headline,
-		full_name: fullName,
-		occupation,
-		experiences,
-		education: educations,
-		accomplishment_projects: projects,
-		volunteer_work: volunteers,
+		educations, email, experiences, fullName,
+		id, linkedinUsername, profile,
+		projects, updatedAt, volunteerWorks,
 	} = data;
 
 	return (
@@ -43,11 +34,15 @@ function LinkedinProfile({ data }: LinkedinProfileProps) {
 				</div>
 				<div className='stat'>
 					<div className='stat-title'>Headline</div>
-					<div className='stat-value text-secondary'>{ headline }</div>
+					<div className='stat-value text-secondary'>{ profile.headline }</div>
 				</div>
 				<div className='stat'>
 					<div className='stat-title'>Occupation</div>
-					<div className='stat-value'>{ occupation }</div>
+					<div className='stat-value'>{ profile.occupation }</div>
+				</div>
+				<div className='stat'>
+					<div className='stat-title'>Summary</div>
+					<div className='stat-value'>{ profile.occupation }</div>
 				</div>
 			</div>
 			<div className='prose'>
@@ -65,8 +60,8 @@ function LinkedinProfile({ data }: LinkedinProfileProps) {
 					<tbody>
 						{ experiences.map((experience) => (
 							<tr>
-								<td>{ parseLinkedinDate(experience.starts_at) }</td>
-								<td>{ parseLinkedinDate(experience.ends_at) }</td>
+								<td>{ parseLinkedinDate(experience.startsAt) }</td>
+								<td>{ parseLinkedinDate(experience.endsAt) }</td>
 								<td>{ experience.company }</td>
 								<td>{ experience.title }</td>
 								<td>{ experience.description }</td>
@@ -90,10 +85,10 @@ function LinkedinProfile({ data }: LinkedinProfileProps) {
 					<tbody>
 						{ educations.map((education) => (
 							<tr>
-								<td>{ parseLinkedinDate(education.starts_at) }</td>
-								<td>{ parseLinkedinDate(education.ends_at) }</td>
-								<td>{ education.degree_name }</td>
-								<td>{ education.field_of_study }</td>
+								<td>{ parseLinkedinDate(education.startsAt) }</td>
+								<td>{ parseLinkedinDate(education.endsAt) }</td>
+								<td>{ education.degreeName }</td>
+								<td>{ education.field }</td>
 								<td>{ education.grade }</td>
 								<td>{ education.school }</td>
 								<td>{ education.description }</td>
@@ -151,10 +146,10 @@ function LinkedinProfile({ data }: LinkedinProfileProps) {
 	);
 }
 
-const getLinkedinDataFromUsername = async (username: string): Promise<LinkedinData> => {
+const syncLinkedinToServer = async () => {
 	try {
-		const res = await axios.get<LinkedinData>('/api/linkedin', { params: { username } });
-		return res.data;
+		const syncLinkedinRes = await axios.post('/api/linkedin');
+		return syncLinkedinRes.data;
 	} catch (err) {
 		if (axios.isAxiosError(err) && err.response) {
 			throw err.response.data;
@@ -165,55 +160,89 @@ const getLinkedinDataFromUsername = async (username: string): Promise<LinkedinDa
 };
 
 export function ProfilePage() {
-	const [username, setUsername] = useState('');
-	const [linkedinData, setLinkedinData] = useState<LinkedinData>(null);
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [isSyncingLinkedin, setIsSyncingLinkedin] = useState(false);
+	const {
+		data: user, isLoading, refetch, error,
+	} = useQuery(
+		'user',
+		async () => {
+			try {
+				const resUser = await axios.get('/api/user', { withCredentials: true });
+				return resUser.data;
+			} catch (err) {
+				if (axios.isAxiosError(err) && err.response) {
+					throw err.response.data;
+				}
 
-	useEffect(() => {
-		const localStorageLinkedinData = localStorage.getItem('linkedin');
-
-		if (!localStorageLinkedinData) {
-			return;
-		}
-
-		const decompressedData = lzString.decompressFromUTF16(localStorageLinkedinData);
-		if (!decompressedData) {
-			return;
-		}
-
-		setLinkedinData(JSON.parse(decompressedData));
-	}, []);
-
-	const submit = useCallback(async () => {
-		try {
-			const data = await getLinkedinDataFromUsername(username);
-			setLinkedinData(data);
-			setErrorMessage(null);
-		} catch (err) {
-			setLinkedinData(null);
-
-			if (typeof err === 'string') {
-				setErrorMessage(err);
+				throw err;
 			}
-		}
-	}, [username]);
+		},
+	);
 
-	const save = useCallback(() => {
-		const compressedData = lzString.compressToUTF16(JSON.stringify(linkedinData));
-		localStorage.setItem('linkedin', compressedData);
-	}, [linkedinData]);
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		setError,
+	} = useForm({
+		defaultValues: user,
+	});
+
+	const updateUser = handleSubmit(async (data) => {
+		try {
+			await axios.put('/api/user', data, { withCredentials: true });
+		} catch (err) {
+			if (axios.isAxiosError(err)) {
+				setError('linkedinUsername', { message: String(err.response?.data) });
+				return;
+			}
+
+			if (err instanceof Error) {
+				setError('linkedinUsername', { message: err.message });
+				return;
+			}
+
+			setError('linkedinUsername', { message: 'Unknown error' });
+		}
+	});
+
+	const syncLinkedin = useCallback(async () => {
+		setIsSyncingLinkedin(true);
+		try {
+			await syncLinkedinToServer();
+			await refetch();
+		} catch (err) {
+			alert(err);
+		}
+
+		setIsSyncingLinkedin(false);
+	}, [refetch]);
+
+	if (isLoading) {
+		return <h1>Loading...</h1>;
+	}
 
 	return (
 		<>
-			<div className='form-control'>
-				<div className='input-group'>
-					<Input type='text' value={username} onChange={(e) => setUsername(e.target.value)} />
-					<Button color='primary' onClick={submit}>Submit</Button>
-					{linkedinData && <Button color='secondary' onClick={save}>Save</Button> }
+			{ error }
+			<form onSubmit={updateUser}>
+				<Button type='submit'>Update</Button>
+				<div className='form-control'>
+					<div className='input-group'>
+						<div className='form-control w-full max-w-xs'>
+							<label className='label'>
+								<span className='label-text'>Linkedin Username</span>
+							</label>
+							<input type='linkedinUsername' placeholder='linkedin username' className='input input-bordered w-full max-w-xs' {...register('linkedinUsername')} />
+							{ errors.linkedinUsername && <p className='text-red-500'>{ `${errors.linkedinUsername.message}` }</p> }
+						</div>
+						<Button type='button' color='primary' onClick={syncLinkedin}>Sync</Button>
+						{ isSyncingLinkedin && <h1>Loading...</h1> }
+					</div>
 				</div>
-			</div>
-			<LinkedinProfile data={linkedinData} />
-			{ errorMessage && errorMessage }
+				<User data={user} />
+
+			</form>
 		</>
 	);
 }

@@ -4,7 +4,7 @@ import prisma from '../prisma';
 
 const AuthRouter = express.Router();
 
-AuthRouter.post('/api/signup', async (req, res) => {
+AuthRouter.post('/signup', async (req, res) => {
 	try {
 		const user = await prisma.user.create({
 			data: req.body,
@@ -23,7 +23,7 @@ AuthRouter.post('/api/signup', async (req, res) => {
 	}
 });
 
-AuthRouter.post('/api/login', signIn, (req, res) => {
+AuthRouter.post('/login', signIn, (req, res) => {
 	try {
 		res.status(200).send(req.user);
 	} catch (err) {
@@ -31,7 +31,7 @@ AuthRouter.post('/api/login', signIn, (req, res) => {
 	}
 });
 
-AuthRouter.get('/api/me', authenticate, async (req, res) => {
+AuthRouter.get('/me', authenticate, async (req, res) => {
 	try {
 		res.status(200).send(req.user);
 	} catch (err) {
@@ -39,7 +39,7 @@ AuthRouter.get('/api/me', authenticate, async (req, res) => {
 	}
 });
 
-AuthRouter.post('/api/logout', authenticate, (req, res) => {
+AuthRouter.post('/logout', authenticate, (req, res) => {
 	try {
 		req.logout((err) => {
 			if (err) {
