@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import Button from '../components/Button';
+import Input from '../components/Input';
 import UserState from '../state/UserState';
 
 export default function LoginPage() {
@@ -50,19 +51,21 @@ export default function LoginPage() {
 					<span className='label-text-alt'>{ errors.email.message }</span>
 				</label>
 			) }
-			<div className='form-control w-full max-w-xs'>
-				<label className='label'>
-					<span className='label-text'>Email</span>
-				</label>
-				<input type='email' placeholder='Email' className='input input-bordered w-full max-w-xs' {...register('email')} />
+			<div className='max-w-xs'>
+				<div className='form-control'>
+					<label className='label'>
+						<span className='label-text'>Email</span>
+					</label>
+					<Input type='email' placeholder='username@company.com' {...register('email')} />
+				</div>
+				<div className='form-control'>
+					<label className='label'>
+						<span className='label-text'>Password</span>
+					</label>
+					<Input type='password' {...register('password')} />
+				</div>
+				<Button color='primary' type='submit' block className='mt-3'>Send</Button>
 			</div>
-			<div className='form-control w-full max-w-xs'>
-				<label className='label'>
-					<span className='label-text'>Password</span>
-				</label>
-				<input type='password' placeholder='Password' className='input input-bordered w-full max-w-xs' {...register('password')} />
-			</div>
-			<Button color='primary' type='submit'>Send</Button>
 		</form>
 	);
 }

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import Button from '../components/Button';
+import Input from '../components/Input';
 import UserState from '../state/UserState';
 
 export default function SignupPage() {
@@ -45,40 +46,42 @@ export default function SignupPage() {
 
 	return (
 		<form onSubmit={signup}>
-			<div className='form-control w-full max-w-xs'>
-				<label className='label'>
-					<span className='label-text'>Email</span>
-				</label>
-				<input type='email' placeholder='Email' className='input input-bordered w-full max-w-xs' {...register('email')} />
-				{ errors.email && (
+			<div className='max-w-xs'>
+				<div className='form-control'>
 					<label className='label'>
-						<span className='label-text-alt'>{ errors.email.message }</span>
+						<span className='label-text'>Email</span>
 					</label>
-				) }
-			</div>
-			<div className='form-control w-full max-w-xs'>
-				<label className='label'>
-					<span className='label-text'>Password</span>
-				</label>
-				<input type='password' placeholder='Password' className='input input-bordered w-full max-w-xs' {...register('password')} />
-				{ errors.password && (
+					<Input type='email' placeholder='username@company.com' {...register('email')} />
+					{ errors.email && (
+						<label className='label'>
+							<span className='label-text-alt'>{ errors.email.message }</span>
+						</label>
+					) }
+				</div>
+				<div className='form-control'>
 					<label className='label'>
-						<span className='label-text-alt'>{ errors.password.message }</span>
+						<span className='label-text'>Password</span>
 					</label>
-				) }
-			</div>
-			<div className='form-control w-full max-w-xs'>
-				<label className='label'>
-					<span className='label-text'>Full Name</span>
-				</label>
-				<input type='text' placeholder='Full Name' className='input input-bordered w-full max-w-xs' {...register('fullName')} />
-				{ errors.fullName && (
+					<Input type='password' {...register('password')} />
+					{ errors.password && (
+						<label className='label'>
+							<span className='label-text-alt'>{ errors.password.message }</span>
+						</label>
+					) }
+				</div>
+				<div className='form-control'>
 					<label className='label'>
-						<span className='label-text-alt'>{ errors.fullName.message }</span>
+						<span className='label-text'>Full Name</span>
 					</label>
-				) }
+					<Input type='text' placeholder='John Doe' {...register('fullName')} />
+					{ errors.fullName && (
+						<label className='label'>
+							<span className='label-text-alt'>{ errors.fullName.message }</span>
+						</label>
+					) }
+				</div>
+				<Button color='primary' type='submit' block className='mt-3'>Save</Button>
 			</div>
-			<Button color='primary' type='submit'>Save</Button>
 		</form>
 	);
 }

@@ -7,15 +7,21 @@ export type ButtonProps = {
 	color?: 'primary' | 'secondary'; // two styling options (you can create as many as you want)
 	disabled?: boolean;
 	outline?: boolean;
+	loading?: boolean;
+	block?: boolean;
+	className?: string;
 };
 
 export default function Button({
-	type = 'button',
-	color = 'primary',
+	type,
+	color,
 	children,
 	onClick,
 	disabled,
 	outline,
+	loading,
+	block,
+	className,
 }: ButtonProps) {
 	return (
 		<button
@@ -24,9 +30,13 @@ export default function Button({
 			onClick={onClick}
 			className={clsx([
 				'btn',
-				`btn-${color}`,
-				outline && `btn-outline btn-outline-${color}`,
+				color && `btn-${color}`,
+				outline && 'btn-outline',
+				color && outline && `btn-outline-${color}`,
 				disabled && 'btn-disabled',
+				loading && 'loading',
+				block && 'btn-block',
+				className && className,
 			])}
 		>
 			{ children }

@@ -1,6 +1,6 @@
 // import { useQuery } from 'react-query';
 import {
-	Route, Routes, NavLink, Navigate, useLocation,
+	Route, Routes, Link, NavLink, Navigate, useLocation,
 } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -13,6 +13,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import UserState from './state/UserState';
 import LogoutPage from './pages/LogoutPage';
+import Input from './components/Input';
 
 export interface ProtectedRoutesProps {
 	children: React.ReactElement
@@ -48,71 +49,94 @@ export function App() {
 	}
 
 	return (
-		<div className='container px-12 py-8'>
-			{ user && (
-				<h1 className='text-2xl font-bold'>
-					Welcome
-					{' '}
-					{ user.fullName }
-				</h1>
-			) }
-			<div className='tabs'>
-				{
-					user
-						? (
-							<>
-								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/profile'>Profile</NavLink>
-								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/jobs'>Jobs</NavLink>
-								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/cv'>CV</NavLink>
-								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/logout'>Logout</NavLink>
-							</>
-						) : (
-							<>
-								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/signup'>Sign Up</NavLink>
-								<NavLink className={({ isActive }) => clsx(['tab tab-bordered', isActive && 'tab-active'])} to='/login'>Log In</NavLink>
-							</>
-						)
-				}
-
+		<div className='drawer drawer-mobile'>
+			<Input id='layout-drawer' type='checkbox' className='drawer-toggle' />
+			<div className='drawer-content'>
+				<div className='sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-all duration-100 bg-base-100 text-base-content'>
+					<nav className='navbar w-full'>
+						<div className='flex flex-1' />
+						<div className='flex flex-0 gap-4'>
+							{ user && (
+								<>
+									{ user?.fullName }
+									<Link className='btn btn-sm btn-ghost' to='/logout'>Logout</Link>
+								</>
+							) }
+						</div>
+					</nav>
+				</div>
+				<div className='px-6 xl:pr-2 pb-16'>
+					<Routes>
+						<Route path='/' element={<Navigate to='/profile' />} />
+						<Route path='/login' element={<LoginPage />} />
+						<Route path='/signup' element={<SignupPage />} />
+						<Route
+							path='/profile'
+							element={(
+								<ProtectedRoute>
+									<ProfilePage />
+								</ProtectedRoute>
+							)}
+						/>
+						<Route
+							path='/jobs'
+							element={(
+								<ProtectedRoute>
+									<JobsPage />
+								</ProtectedRoute>
+							)}
+						/>
+						<Route
+							path='/cv'
+							element={(
+								<ProtectedRoute>
+									<CvPage />
+								</ProtectedRoute>
+							)}
+						/>
+						<Route
+							path='/logout'
+							element={(
+								<ProtectedRoute>
+									<LogoutPage />
+								</ProtectedRoute>
+							)}
+						/>
+					</Routes>
+				</div>
+				{/* <label htmlFor='layout-drawer' className='btn btn-primary drawer-button lg:hidden'>
+						Open drawer
+					</label> */}
 			</div>
-			<div className='py-4'>
-				<Routes>
-					<Route path='/' element={<Navigate to='/profile' />} />
-					<Route path='/login' element={<LoginPage />} />
-					<Route path='/signup' element={<SignupPage />} />
-					<Route
-						path='/profile'
-						element={(
-							<ProtectedRoute>
-								<ProfilePage />
-							</ProtectedRoute>
-						)}
-					/>
-					<Route
-						path='/jobs'
-						element={(
-							<ProtectedRoute>
-								<JobsPage />
-							</ProtectedRoute>
-						)}
-					/>
-					<Route
-						path='/cv'
-						element={(
-							<ProtectedRoute>
-								<CvPage />
-							</ProtectedRoute>
-						)}
-					/>
-					<Route
-						path='/logout'
-						element={(
-							<ProtectedRoute>
-								<LogoutPage />
-							</ProtectedRoute>
-						)}
-					/>
-				</Routes>
+			<div className='drawer-side'>
+				<label htmlFor='layout-drawer' className='drawer-overlay' />
+				<aside className='bg-base-200 w-80'>
+					<div className='z-20 bg-base-200 bg-opacity-90 backdrop-blur sticky top-0 items-center gap-2 px-4 py-2 hidden lg:flex'>
+						<a href='/' className='flex-0 btn btn-ghost px-2'>
+							<span className='font-title inline-flex text-lg transition-all duration-200 md:text-3xl'>
+								CV
+							</span>
+						</a>
+					</div>
+					<ul className='menu menu-compact flex flex-col p-0 px-4'>
+						{
+							user
+								? (
+									<>
+										<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/profile'>Profile</NavLink></li>
+										<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/jobs'>Jobs</NavLink></li>
+										<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/cv'>CV</NavLink></li>
+									</>
+								) : (
+									<>
+										<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/signup'>Sign Up</NavLink></li>
+										<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/login'>Log In</NavLink></li>
+									</>
+								)
+						}
+					</ul>
+				</aside>
+
 			</div>
 		</div>
 	);

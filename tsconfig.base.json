@@ -17,7 +17,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@cv/api/interface": [
+        "packages/api/interface/src/index.ts"
+      ]
+    }
   },
   "exclude": [
     "node_modules",
