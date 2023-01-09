@@ -57,9 +57,9 @@ model UserExperience {
     title         String
     description   String?
     company       String?
-    startsAtDay   Int
-    startsAtMonth Int
-    startsAtYear  Int
+    startsAtDay   Int?
+    startsAtMonth Int?
+    startsAtYear  Int?
     endsAtDay     Int?
     endsAtMonth   Int?
     endsAtYear    Int?
@@ -76,9 +76,9 @@ model UserEducation {
     field         String?
     degreeName    String?
     grade         Int?
-    startsAtDay   Int
-    startsAtMonth Int
-    startsAtYear  Int
+    startsAtDay   Int?
+    startsAtMonth Int?
+    startsAtYear  Int?
     endsAtDay     Int?
     endsAtMonth   Int?
     endsAtYear    Int?
@@ -92,9 +92,9 @@ model UserProject {
     id            String   @id @default(uuid())
     title         String
     description   String?
-    startsAtDay   Int
-    startsAtMonth Int
-    startsAtYear  Int
+    startsAtDay   Int?
+    startsAtMonth Int?
+    startsAtYear  Int?
     endsAtDay     Int?
     endsAtMonth   Int?
     endsAtYear    Int?
@@ -110,9 +110,9 @@ model UserVolunteerWork {
     description   String?
     cause         String?
     company       String?
-    startsAtDay   Int
-    startsAtMonth Int
-    startsAtYear  Int
+    startsAtDay   Int?
+    startsAtMonth Int?
+    startsAtYear  Int?
     endsAtDay     Int?
     endsAtMonth   Int?
     endsAtYear    Int?

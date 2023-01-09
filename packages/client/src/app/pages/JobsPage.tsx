@@ -13,7 +13,6 @@ function JobForm({ job }: JobProps) {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
 		setError,
 	} = useForm({
 		defaultValues: job,
@@ -38,15 +37,19 @@ function JobForm({ job }: JobProps) {
 	});
 
 	return (
-		<form onSubmit={updateJob}>
-			<Input type='text' placeholder='linkedin username' className='input input-bordered w-full max-w-xs' {...register('title')} />
-			<textarea
-				className='textarea textarea-bordered w-10/12 block mb-4'
-				rows={10}
-				placeholder='Jop description'
-			/>
-			<Button color='primary' type='submit'>Save</Button>
-		</form>
+		<>
+			<h1>Jobs</h1>
+			<form onSubmit={updateJob}>
+				<Input type='text' placeholder='johndoe12' {...register('title')} />
+				<textarea
+					className='textarea textarea-bordered w-10/12 block mb-4'
+					rows={4}
+					placeholder='Jop description'
+				/>
+				<Button color='primary' type='submit'>Save</Button>
+				<Button color='secondary' type='submit'>Analyze</Button>
+			</form>
+		</>
 	);
 }
 
@@ -54,7 +57,7 @@ export function JobsPage() {
 	const {
 		data: jobs, isLoading,
 	} = useQuery<Job[]>(
-		'user',
+		'jobs',
 		async () => {
 			try {
 				const resJobs = await axios.get<Job[]>('/api/jobs', { withCredentials: true });
@@ -68,15 +71,6 @@ export function JobsPage() {
 			}
 		},
 	);
-
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		setError,
-	} = useForm({
-		defaultValues: jobs,
-	});
 
 	if (isLoading || !jobs) {
 		return <h1>Loading...</h1>;

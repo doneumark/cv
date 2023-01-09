@@ -59,6 +59,7 @@ UserRouter.post('/linkedin', authenticate, async (req: AuthRequest, res) => {
 		const syncedUser = await user.syncFromLinkedin();
 		res.status(200).send(syncedUser);
 	} catch (err) {
+		console.log(err);
 		res.status(400).send(err.message);
 	}
 });

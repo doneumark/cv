@@ -6,12 +6,13 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-	({ className, ...inputProps }, ref) => (
+	({ className, size, ...inputProps }, ref) => (
 		<input
 			{...inputProps}
 			ref={ref}
 			className={clsx([
 				'input input-bordered',
+				size && `input-${size}`,
 				className,
 			])}
 		/>

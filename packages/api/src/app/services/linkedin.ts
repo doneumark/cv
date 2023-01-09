@@ -16,14 +16,14 @@ type LinkedinData = {
 	country_full_name: string,
 	experiences: {
 		starts_at: LinkedinDate,
-		ends_at: LinkedinDate,
+		ends_at?: LinkedinDate,
 		company: string,
 		title: string,
 		description: string,
 	}[],
 	education: {
 		starts_at: LinkedinDate,
-		ends_at: LinkedinDate,
+		ends_at?: LinkedinDate,
 		field_of_study: string,
 		degree_name: string,
 		school: string,
@@ -32,13 +32,13 @@ type LinkedinData = {
 	}[],
 	accomplishment_projects: {
 		starts_at: LinkedinDate,
-		ends_at: LinkedinDate,
+		ends_at?: LinkedinDate,
 		title: string,
 		description: string,
 	}[],
 	volunteer_work: {
 		starts_at: LinkedinDate,
-		ends_at: LinkedinDate,
+		ends_at?: LinkedinDate,
 		title: string | null,
 		cause: string | null,
 		company: string | null,

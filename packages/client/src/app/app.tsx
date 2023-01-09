@@ -65,7 +65,7 @@ export function App() {
 						</div>
 					</nav>
 				</div>
-				<div className='px-6 xl:pr-2 pb-16'>
+				<div className='px-6 xl:pr-2 pb-16 prose'>
 					<Routes>
 						<Route path='/' element={<Navigate to='/profile' />} />
 						<Route path='/login' element={<LoginPage />} />
@@ -118,6 +118,7 @@ export function App() {
 							</span>
 						</a>
 					</div>
+					<div className='h-4' />
 					<ul className='menu menu-compact flex flex-col p-0 px-4'>
 						{
 							user
@@ -129,14 +130,13 @@ export function App() {
 									</>
 								) : (
 									<>
-										<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/signup'>Sign Up</NavLink></li>
 										<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/login'>Log In</NavLink></li>
+										<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/signup'>Sign Up</NavLink></li>
 									</>
 								)
 						}
 					</ul>
 				</aside>
-
 			</div>
 		</div>
 	);
