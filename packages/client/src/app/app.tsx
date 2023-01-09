@@ -65,48 +65,50 @@ export function App() {
 						</div>
 					</nav>
 				</div>
-				<div className='px-6 xl:pr-2 pb-16 prose'>
-					<Routes>
-						<Route path='/' element={<Navigate to='/profile' />} />
-						<Route path='/login' element={<LoginPage />} />
-						<Route path='/signup' element={<SignupPage />} />
-						<Route
-							path='/profile'
-							element={(
-								<ProtectedRoute>
-									<ProfilePage />
-								</ProtectedRoute>
-							)}
-						/>
-						<Route
-							path='/jobs'
-							element={(
-								<ProtectedRoute>
-									<JobsPage />
-								</ProtectedRoute>
-							)}
-						/>
-						<Route
-							path='/cv'
-							element={(
-								<ProtectedRoute>
-									<CvPage />
-								</ProtectedRoute>
-							)}
-						/>
-						<Route
-							path='/logout'
-							element={(
-								<ProtectedRoute>
-									<LogoutPage />
-								</ProtectedRoute>
-							)}
-						/>
-					</Routes>
+				<div className='px-6 xl:pr-2 pb-16'>
+					<div className='prose w-full max-w-4xl flex-grow'>
+						<Routes>
+							<Route path='/' element={<Navigate to='/profile' />} />
+							<Route path='/login' element={<LoginPage />} />
+							<Route path='/signup' element={<SignupPage />} />
+							<Route
+								path='/profile/*'
+								element={(
+									<ProtectedRoute>
+										<ProfilePage />
+									</ProtectedRoute>
+								)}
+							/>
+							<Route
+								path='/jobs'
+								element={(
+									<ProtectedRoute>
+										<JobsPage />
+									</ProtectedRoute>
+								)}
+							/>
+							<Route
+								path='/cv'
+								element={(
+									<ProtectedRoute>
+										<CvPage />
+									</ProtectedRoute>
+								)}
+							/>
+							<Route
+								path='/logout'
+								element={(
+									<ProtectedRoute>
+										<LogoutPage />
+									</ProtectedRoute>
+								)}
+							/>
+						</Routes>
+					</div>
 				</div>
-				{/* <label htmlFor='layout-drawer' className='btn btn-primary drawer-button lg:hidden'>
-						Open drawer
-					</label> */}
+				<label htmlFor='layout-drawer' className='btn btn-primary drawer-button lg:hidden'>
+					Open drawer
+				</label>
 			</div>
 			<div className='drawer-side'>
 				<label htmlFor='layout-drawer' className='drawer-overlay' />

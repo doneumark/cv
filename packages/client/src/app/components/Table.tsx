@@ -14,6 +14,7 @@ export default function Table({
 					'table',
 					'table-compact',
 					'w-full',
+					'my-0',
 				])}
 			>
 				{ children }
