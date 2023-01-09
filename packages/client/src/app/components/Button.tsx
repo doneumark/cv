@@ -4,7 +4,7 @@ export type ButtonProps = {
 	type?: 'button' | 'submit' | 'reset';
 	onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 	children?: React.ReactNode;
-	color?: 'primary' | 'secondary'; // two styling options (you can create as many as you want)
+	color?: 'primary' | 'secondary' | 'accent' | 'success';
 	disabled?: boolean;
 	outline?: boolean;
 	loading?: boolean;
@@ -36,7 +36,7 @@ export default function Button({
 				disabled && 'btn-disabled',
 				loading && 'loading',
 				block && 'btn-block',
-				className && className,
+				className,
 			])}
 		>
 			{ children }

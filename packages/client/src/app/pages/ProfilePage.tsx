@@ -46,30 +46,46 @@ export function ProfilePage() {
 		<>
 			<h1>Profile</h1>
 			<div className='grid'>
-				<div className='tabs not-prose z-10' style={{ marginBottom: -2 }}>
+				<div className='tabs not-prose z-10 -mb-px'>
 					<NavLink to='' end className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
 						General
 					</NavLink>
 					<NavLink to='experiences' className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
-						Experiences
-						<div className='badge badge-secondary'>{ experiences.length }</div>
+						{({ isActive }) => (
+							<>
+								Experiences
+								<div className={clsx('badge', isActive ? 'badge-primary' : 'badge-outline')}>{ experiences.length }</div>
+							</>
+						)}
 					</NavLink>
 					<NavLink to='educations' className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
-						Educations
-						<div className='badge badge-secondary'>{ educations.length }</div>
+						{({ isActive }) => (
+							<>
+								Educations
+								<div className={clsx('badge', isActive ? 'badge-primary' : 'badge-outline')}>{ educations.length }</div>
+							</>
+						)}
 					</NavLink>
 					<NavLink to='projects' className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
-						Projects
-						<div className='badge badge-secondary'>{ projects.length }</div>
+						{({ isActive }) => (
+							<>
+								Projects
+								<div className={clsx('badge', isActive ? 'badge-primary' : 'badge-outline')}>{ projects.length }</div>
+							</>
+						)}
 					</NavLink>
 					<NavLink to='volunteer-works' className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
-						Volunteer
-						<div className='badge badge-secondary'>{ volunteerWorks.length }</div>
+						{({ isActive }) => (
+							<>
+								Volunteer
+								<div className={clsx('badge', isActive ? 'badge-primary' : 'badge-outline')}>{ volunteerWorks.length }</div>
+							</>
+						)}
 					</NavLink>
 					<div className='tab tab-lifted flex-1 mr-6 cursor-default [--tab-border-color:transparent]' />
 				</div>
 				<div className='rounded-b-box rounded-tr-box relative overflow-x-auto'>
-					<div className='border-base-300 rounded-b-box rounded-tr-box border-2 p-4'>
+					<div className='border-base-300 rounded-b-box rounded-tr-box border p-4'>
 						<Routes>
 							<Route
 								path='/'
@@ -88,7 +104,7 @@ export function ProfilePage() {
 								element={<Projects projects={projects} />}
 							/>
 							<Route
-								path='/volunteer'
+								path='/volunteer-works'
 								element={<VolunteerWorks volunteerWorks={volunteerWorks} />}
 							/>
 						</Routes>

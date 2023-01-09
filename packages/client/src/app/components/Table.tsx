@@ -12,7 +12,7 @@ export default function Table({
 			<table
 				className={clsx([
 					'table',
-					'table-compact',
+					// 'table-compact',
 					'w-full',
 					'my-0',
 				])}
