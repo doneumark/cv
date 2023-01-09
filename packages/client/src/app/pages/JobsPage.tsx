@@ -39,16 +39,31 @@ function JobForm({ job }: JobProps) {
 	return (
 		<>
 			<h1>Jobs</h1>
-			<form onSubmit={updateJob}>
-				<Input type='text' placeholder='johndoe12' {...register('title')} />
-				<textarea
-					className='textarea textarea-bordered w-10/12 block mb-4'
-					rows={4}
-					placeholder='Jop description'
-				/>
-				<Button color='primary' type='submit'>Save</Button>
-				<Button color='secondary' type='submit'>Analyze</Button>
-			</form>
+			<div className='card card-compact bg-base-100 card-bordered'>
+				<div className='card-body'>
+					<form onSubmit={updateJob} className='space-y-4'>
+						<div className='form-control'>
+							<label className='label pt-0 pb-2'>
+								<span className='label-text'>Title</span>
+							</label>
+							<Input type='text' placeholder='Job Title' {...register('title')} />
+						</div>
+						<div className='form-control'>
+							<label className='label pt-0 pb-2'>
+								<span className='label-text'>Description</span>
+							</label>
+							<textarea
+								className='textarea textarea-bordered w-full block'
+								rows={4}
+								placeholder='Jop description'
+								{...register('description')}
+							/>
+						</div>
+						<Button color='primary' type='submit'>Save</Button>
+						<Button color='secondary' type='submit'>Analyze</Button>
+					</form>
+				</div>
+			</div>
 		</>
 	);
 }

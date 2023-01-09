@@ -45,43 +45,48 @@ export default function SignupPage() {
 	});
 
 	return (
-		<form onSubmit={signup}>
-			<div className='max-w-xs'>
-				<div className='form-control'>
-					<label className='label'>
-						<span className='label-text'>Email</span>
-					</label>
-					<Input type='email' placeholder='username@company.com' {...register('email')} />
-					{ errors.email && (
-						<label className='label'>
-							<span className='label-text-alt'>{ errors.email.message }</span>
-						</label>
-					) }
+		<>
+			<h1>Sign Up</h1>
+			<div className='card card-compact w-96 bg-base-100 card-bordered'>
+				<div className='card-body'>
+					<form onSubmit={signup} className='space-y-4'>
+						<div className='form-control'>
+							<label className='label pt-0 pb-2'>
+								<span className='label-text'>Email</span>
+							</label>
+							<Input type='email' placeholder='username@company.com' {...register('email')} />
+							{ errors.email && (
+								<label className='label'>
+									<span className='label-text-alt'>{ errors.email.message }</span>
+								</label>
+							) }
+						</div>
+						<div className='form-control'>
+							<label className='label pt-0 pb-2'>
+								<span className='label-text'>Password</span>
+							</label>
+							<Input type='password' {...register('password')} />
+							{ errors.password && (
+								<label className='label'>
+									<span className='label-text-alt'>{ errors.password.message }</span>
+								</label>
+							) }
+						</div>
+						<div className='form-control'>
+							<label className='label pt-0 pb-2'>
+								<span className='label-text'>Full Name</span>
+							</label>
+							<Input type='text' placeholder='John Doe' {...register('fullName')} />
+							{ errors.fullName && (
+								<label className='label'>
+									<span className='label-text-alt'>{ errors.fullName.message }</span>
+								</label>
+							) }
+						</div>
+						<Button color='primary' type='submit' block>Save</Button>
+					</form>
 				</div>
-				<div className='form-control'>
-					<label className='label'>
-						<span className='label-text'>Password</span>
-					</label>
-					<Input type='password' {...register('password')} />
-					{ errors.password && (
-						<label className='label'>
-							<span className='label-text-alt'>{ errors.password.message }</span>
-						</label>
-					) }
-				</div>
-				<div className='form-control'>
-					<label className='label'>
-						<span className='label-text'>Full Name</span>
-					</label>
-					<Input type='text' placeholder='John Doe' {...register('fullName')} />
-					{ errors.fullName && (
-						<label className='label'>
-							<span className='label-text-alt'>{ errors.fullName.message }</span>
-						</label>
-					) }
-				</div>
-				<Button color='primary' type='submit' block className='mt-3'>Save</Button>
 			</div>
-		</form>
+		</>
 	);
 }

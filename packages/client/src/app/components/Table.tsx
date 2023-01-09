@@ -8,7 +8,7 @@ export default function Table({
 	children,
 }: TableProps) {
 	return (
-		<div className='overflow-x-auto'>
+		<div className='overflow-x-auto w-full'>
 			<table
 				className={clsx([
 					'table',
