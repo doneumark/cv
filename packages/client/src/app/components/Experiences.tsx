@@ -18,7 +18,7 @@ export default function Experiences({ experiences }: ExperiencesProps) {
 	);
 
 	return (
-		<div className='space-y-4'>
+		<div className='space-y-6'>
 			<div className='flex justify-between'>
 				<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
 				<Button color='secondary' type='submit' className='gap-2'>

@@ -46,10 +46,12 @@ export default function LoginPage() {
 
 	return (
 		<>
-			<h1>Log In</h1>
-			<div className='card card-compact w-96 bg-base-100 card-bordered'>
+			<div className='prose'>
+				<h1 className='mt-3 mb-6'>Log In</h1>
+			</div>
+			<div className='card w-96 bg-base-100 card-bordered border-base-300'>
 				<div className='card-body'>
-					<form onSubmit={login} className='space-y-4'>
+					<form onSubmit={login} className='space-y-6'>
 						{ errors.email && (
 							<label className='label'>
 								<span className='label-text-alt'>{ errors.email.message }</span>

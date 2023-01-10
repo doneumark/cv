@@ -38,10 +38,12 @@ function JobForm({ job }: JobProps) {
 
 	return (
 		<>
-			<h1>Jobs</h1>
-			<div className='card card-compact bg-base-100 card-bordered'>
-				<div className='card-body'>
-					<form onSubmit={updateJob} className='space-y-4'>
+			<div className='prose'>
+				<h1 className='mt-3 mb-6'>Jobs</h1>
+			</div>
+			<div className='card bg-base-100 card-bordered border-base-300'>
+				<div className='card-body p-6'>
+					<form onSubmit={updateJob} className='space-y-6'>
 						<div className='form-control'>
 							<label className='label pt-0 pb-2'>
 								<span className='label-text'>Title</span>

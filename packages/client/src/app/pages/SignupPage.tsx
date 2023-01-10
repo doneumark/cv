@@ -46,10 +46,12 @@ export default function SignupPage() {
 
 	return (
 		<>
-			<h1>Sign Up</h1>
-			<div className='card card-compact w-96 bg-base-100 card-bordered'>
+			<div className='prose'>
+				<h1 className='mt-3 mb-6'>Sign Up</h1>
+			</div>
+			<div className='card w-96 bg-base-100 card-bordered border-base-300'>
 				<div className='card-body'>
-					<form onSubmit={signup} className='space-y-4'>
+					<form onSubmit={signup} className='space-y-6'>
 						<div className='form-control'>
 							<label className='label pt-0 pb-2'>
 								<span className='label-text'>Email</span>

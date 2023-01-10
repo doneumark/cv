@@ -6,7 +6,7 @@ export default function Navbar() {
 	const [user] = useRecoilState(UserState);
 
 	return (
-		<div className='sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-all duration-100 bg-base-100 text-base-content'>
+		<div className='sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-all duration-100 bg-base-200 text-base-content border-base-300 border-b'>
 			<nav className='navbar w-full'>
 				<div className='flex flex-1 md:gap-1 lg:gap-2'>
 					<span className='tooltip tooltip-bottom before:text-xs before:content-[attr(data-tip)]' data-tip='Menu'>
@@ -25,7 +25,7 @@ export default function Navbar() {
 									<img alt={user.fullName} src='https://placeimg.com/80/80/people' />
 								</div>
 							</label>
-							<ul tabIndex={0} className='p-2 shadow menu dropdown-content bg-base-200 rounded-box w-52'>
+							<ul tabIndex={0} className='p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52'>
 								<li className='menu-title'>
 									<span>{ user.fullName }</span>
 								</li>

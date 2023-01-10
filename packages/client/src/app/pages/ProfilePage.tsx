@@ -44,13 +44,13 @@ export function ProfilePage() {
 
 	return (
 		<>
-			<h1>Profile</h1>
+			<div className='prose'><h1 className='mt-3 mb-6'>Profile</h1></div>
 			<div className='grid'>
-				<div className='tabs not-prose z-10 -mb-px'>
-					<NavLink to='' end className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
+				<div className='tabs z-10 -mb-px'>
+					<NavLink to='' end className={({ isActive }) => clsx(['tab tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
 						General
 					</NavLink>
-					<NavLink to='experiences' className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
+					<NavLink to='experiences' className={({ isActive }) => clsx(['tab tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
 						{({ isActive }) => (
 							<>
 								Experiences
@@ -58,7 +58,7 @@ export function ProfilePage() {
 							</>
 						)}
 					</NavLink>
-					<NavLink to='educations' className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
+					<NavLink to='educations' className={({ isActive }) => clsx(['tab tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
 						{({ isActive }) => (
 							<>
 								Educations
@@ -66,7 +66,7 @@ export function ProfilePage() {
 							</>
 						)}
 					</NavLink>
-					<NavLink to='projects' className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
+					<NavLink to='projects' className={({ isActive }) => clsx(['tab tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
 						{({ isActive }) => (
 							<>
 								Projects
@@ -74,7 +74,7 @@ export function ProfilePage() {
 							</>
 						)}
 					</NavLink>
-					<NavLink to='volunteer-works' className={({ isActive }) => clsx(['tab tab-lg tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
+					<NavLink to='volunteer-works' className={({ isActive }) => clsx(['tab tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>
 						{({ isActive }) => (
 							<>
 								Volunteer
@@ -84,8 +84,8 @@ export function ProfilePage() {
 					</NavLink>
 					<div className='tab tab-lifted flex-1 mr-6 cursor-default [--tab-border-color:transparent]' />
 				</div>
-				<div className='rounded-b-box rounded-tr-box relative overflow-x-auto'>
-					<div className='border-base-300 rounded-b-box rounded-tr-box border p-4'>
+				<div className='rounded-b-box border-base-300 rounded-tr-box bg-base-100 relative overflow-x-auto'>
+					<div className='border-base-300 rounded-b-box rounded-tr-box border p-6'>
 						<Routes>
 							<Route
 								path='/'

@@ -29,10 +29,10 @@ export function App() {
 	return (
 		<div className='drawer drawer-mobile'>
 			<Input id='layout-drawer' type='checkbox' className='drawer-toggle' />
-			<div className='drawer-content'>
+			<div className='drawer-content bg-base-200'>
 				<Navbar />
 				<div className='px-6 xl:pr-2 pb-16'>
-					<div className='prose w-full max-w-4xl flex-grow'>
+					<div className='w-full max-w-4xl flex-grow'>
 						<Router />
 					</div>
 				</div>
