@@ -44,7 +44,9 @@ export function ProfilePage() {
 
 	return (
 		<>
-			<div className='prose'><h1 className='mt-3 mb-6'>Profile</h1></div>
+			<div className='prose'>
+				<h1 className='mt-3 mb-6'>Profile</h1>
+			</div>
 			<div className='grid'>
 				<div className='tabs z-10 -mb-px'>
 					<NavLink to='' end className={({ isActive }) => clsx(['tab tab-lifted flex items-center gap-2', isActive ? 'tab-active' : '[--tab-border-color:transparent]'])}>

@@ -8,6 +8,11 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Router from './components/Router';
 
+// icons: https://tailwindcss.com/blog/heroicons-v1
+// form: https://tailwindui.com/components/application-ui/forms/form-layouts
+// example: https://protocol.tailwindui.com/quickstart
+// examples: https://www.creative-tim.com/templates/tailwind-dashboard
+
 export function App() {
 	const [, setUser] = useRecoilState(UserState);
 	const { isLoading } = useQuery(
