@@ -25,7 +25,7 @@ function Modal({ show, onClose, children }: ModalProps) {
 			<input type='checkbox' className='modal-toggle' checked={show} onChange={() => {}} />
 			<div className='modal cursor-pointer' onClick={onModalClick} onKeyDown={onKeyPress} role='button' tabIndex={0}>
 				<div className='modal-box relative w-11/12 max-w-3xl cursor-auto'>
-					<button className='btn btn-sm btn-circle absolute btn-ghost right-1.5 top-1.5' onClick={onClose}>✕</button>
+					<button className='btn btn-circle absolute btn-ghost right-3 top-3' onClick={onClose}>✕</button>
 					{ children }
 				</div>
 			</div>

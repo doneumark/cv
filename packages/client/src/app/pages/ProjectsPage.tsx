@@ -36,7 +36,7 @@ function CreateProjectRoute({ path }: ProjectRouteProps) {
 
 	return (
 		<Modal show={isCreateProjectPath} onClose={() => navigate(projectsPath)}>
-			<div className='prose'>
+			<div className='prose mb-6'>
 				<h3>Create Project</h3>
 			</div>
 			<ProjectForm
@@ -83,7 +83,7 @@ function UpdateProjectRoute({ path }: ProjectRouteProps) {
 
 	return (
 		<Modal show={isUpdateProjectPath} onClose={() => navigate(projectsPath)}>
-			<div className='prose'>
+			<div className='prose mb-6'>
 				<h3>Update Project</h3>
 			</div>
 			{ isLoading

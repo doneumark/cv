@@ -36,7 +36,7 @@ function CreateExperienceRoute({ path }: ExperienceRouteProps) {
 
 	return (
 		<Modal show={isCreateExperiencePath} onClose={() => navigate(experiencesPath)}>
-			<div className='prose'>
+			<div className='prose mb-6'>
 				<h3>Create Experience</h3>
 			</div>
 			<ExperienceForm
@@ -83,7 +83,7 @@ function UpdateExperienceRoute({ path }: ExperienceRouteProps) {
 
 	return (
 		<Modal show={isUpdateExperiencePath} onClose={() => navigate(experiencesPath)}>
-			<div className='prose'>
+			<div className='prose mb-6'>
 				<h3>Update Experience</h3>
 			</div>
 			{ isLoading
@@ -151,57 +151,48 @@ export default function Experiences() {
 									Add Experience
 								</Button>
 							</div>
-							<Table>
-								<thead>
-									<tr>
-										<th>From</th>
-										<th>To</th>
-										<th>Company</th>
-										<th>Title</th>
-										<th>Description</th>
-									</tr>
-								</thead>
-								<tbody>
-									{ !filteredExperiences.length && (
-										<tr>
-											<td colSpan={4} className='text-center'>
-												No experiences found
-											</td>
-										</tr>
-									)}
-									{ filteredExperiences.map((experience) => (
-										<tr key={experience.id}>
-											<td>
-												<Link to={experience.id}>
-													{ parseLinkedinDate(
-														experience.startsAtDay,
-														experience.startsAtMonth,
-														experience.startsAtYear,
-													) }
-												</Link>
-											</td>
-											<td>
-												{ parseLinkedinDate(
-													experience.endsAtDay,
-													experience.endsAtMonth,
-													experience.endsAtYear,
-												) }
-											</td>
-											<td>
-												<Link to={experience.id}>
-													{ experience.company }
-												</Link>
-											</td>
-											<td>
-												<Link to={experience.id}>
-													{ experience.title }
-												</Link>
-											</td>
-											<td>{ experience.description }</td>
-										</tr>
-									)) }
-								</tbody>
-							</Table>
+							{ !filteredExperiences.length && (
+								<div className='text-center'>
+									No experiences found
+								</div>
+							)}
+							<div className='space-y-3'>
+								{ filteredExperiences.map((experience) => (
+									<Link className='card card-bordered border-base-300 card-compact hover:shadow-md cursor-pointer flex items-between group' to={experience.id}>
+										<div className='card-body flex-row items-center justify-between'>
+											<div>
+												<div className='flex items-center gap-3'>
+													<div className='card-title'>
+														{ experience.company }
+													</div>
+													<h6>{ experience.title }</h6>
+												</div>
+												<div className='flex items-center gap-3'>
+													<div className='flex items-center'>
+														{ parseLinkedinDate(
+															experience.startsAtDay,
+															experience.startsAtMonth,
+															experience.startsAtYear,
+														) }
+														{ ' - ' }
+														{ parseLinkedinDate(
+															experience.endsAtDay,
+															experience.endsAtMonth,
+															experience.endsAtYear,
+														) || 'Now' }
+													</div>
+													{ experience.description }
+												</div>
+											</div>
+											<div className='hidden group-hover:block'>
+												<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
+													<path strokeLinecap='round' strokeLinejoin='round' d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125' />
+												</svg>
+											</div>
+										</div>
+									</Link>
+								)) }
+							</div>
 						</div>
 					)}
 			</PageContent>
