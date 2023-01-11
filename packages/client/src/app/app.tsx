@@ -15,9 +15,9 @@ import Router from './components/Router';
 
 export function App() {
 	const [, setUser] = useRecoilState(UserState);
-	const { isLoading } = useQuery(
-		'me',
-		async () => {
+	const { isLoading } = useQuery({
+		queryKey: 'me',
+		queryFn: async () => {
 			try {
 				const resMe = await axios.get('/api/me', { withCredentials: true });
 				setUser(resMe.data);
@@ -25,7 +25,9 @@ export function App() {
 				setUser(null);
 			}
 		},
-	);
+		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+	});
 
 	if (isLoading) {
 		return <h1>Loading...</h1>;

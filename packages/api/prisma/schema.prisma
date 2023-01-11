@@ -106,6 +106,8 @@ model UserProject {
     user          User     @relation(fields: [userId], references: [id])
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
+
+    @@unique([id, userId])
 }
 
 model UserVolunteerWork {

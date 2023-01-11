@@ -4,7 +4,7 @@ export interface User {
 	fullName: string;
 }
 
-export default atom({
+export default atom<User | null>({
 	key: 'userState', // unique ID (with respect to other atoms/selectors)
-	default: null as User | null, // default value (aka initial value)
+	default: null,
 });

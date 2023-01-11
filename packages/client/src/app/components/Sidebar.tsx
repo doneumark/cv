@@ -1,10 +1,44 @@
 import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useRecoilState } from 'recoil';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 import UserState from '../state/UserState';
+import UserCountsState from '../state/UserCountsState';
+
+interface SidebarLinkProps {
+	to: string;
+	text: string;
+	number?: number;
+}
+
+function SidebarLink({ to, text, number }: SidebarLinkProps) {
+	return (
+		<NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to={to}>
+			{({ isActive }) => (
+				<>
+					<span className='flex-1'>{ text }</span>
+					{ (number || number === 0) && <span className={clsx(['badge badge-sm flex-none lowercase', isActive && 'badge-ghost'])}>{ number }</span> }
+				</>
+			)}
+
+		</NavLink>
+	);
+}
 
 export default function Sidebar() {
 	const [user] = useRecoilState(UserState);
+	const [userCounts, setUserCounts] = useRecoilState(UserCountsState);
+
+	useQuery({
+		queryKey: ['counts'],
+		queryFn: async () => {
+			const resCounts = await axios.get('/api/me/counts', { withCredentials: true });
+			setUserCounts(resCounts.data);
+		},
+		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+	});
 
 	return (
 		<aside className='bg-base-200 w-80 border-base-300 border-r'>
@@ -21,14 +55,36 @@ export default function Sidebar() {
 					user
 						? (
 							<>
-								<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/profile'>Profile</NavLink></li>
-								<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/jobs'>Jobs</NavLink></li>
-								<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/cv'>CV</NavLink></li>
+								<li>
+									<SidebarLink to='/profile' text='Profile' />
+								</li>
+								<li>
+									<SidebarLink to='/experiences' text='Experiences' number={userCounts.experiences} />
+								</li>
+								<li>
+									<SidebarLink to='/educations' text='Educations' number={userCounts.educations} />
+								</li>
+								<li>
+									<SidebarLink to='/projects' text='Projects' number={userCounts.projects} />
+								</li>
+								<li>
+									<SidebarLink to='/volunteer' text='Volunteer' number={userCounts.volunteerWorks} />
+								</li>
+								<li>
+									<SidebarLink to='/jobs' text='Jobs' number={userCounts.jobs} />
+								</li>
+								<li>
+									<SidebarLink to='/cv' text='CV' />
+								</li>
 							</>
 						) : (
 							<>
-								<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/login'>Log In</NavLink></li>
-								<li><NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to='/signup'>Sign Up</NavLink></li>
+								<li>
+									<SidebarLink to='/login' text='Log In' />
+								</li>
+								<li>
+									<SidebarLink to='/signup' text='Sign Up' />
+								</li>
 							</>
 						)
 				}

@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import ReactDOM from 'react-dom';
 
 interface ModalProps {
@@ -7,15 +8,25 @@ interface ModalProps {
 }
 
 function Modal({ show, onClose, children }: ModalProps) {
+	const onModalClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.target === e.currentTarget) {
+			onClose();
+		}
+	}, [onClose]);
+
+	const onKeyPress = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (e.key === 'Escape') {
+			onClose();
+		}
+	}, [onClose]);
+
 	return (
 		<>
-			<input type='checkbox' className='modal-toggle' checked={show} />
-			<div className='modal'>
-				<div className='modal-box w-11/12 max-w-5xl'>
+			<input type='checkbox' className='modal-toggle' checked={show} onChange={() => {}} />
+			<div className='modal cursor-pointer' onClick={onModalClick} onKeyDown={onKeyPress} role='button' tabIndex={0}>
+				<div className='modal-box relative w-11/12 max-w-3xl cursor-auto'>
+					<button className='btn btn-sm btn-circle absolute btn-ghost right-1.5 top-1.5' onClick={onClose}>✕</button>
 					{ children }
-					<div className='modal-action'>
-						<button className='btn' onClick={onClose}>Yay!</button>
-					</div>
 				</div>
 			</div>
 		</>

@@ -9,6 +9,7 @@ import AuthRouter from './routers/AuthRouter';
 import UserRouter from './routers/UserRouter';
 import JobRouter from './routers/JobRouter';
 import CvRouter from './routers/CvRouter';
+import UserProjectRouter from './routers/UserProjectRouter';
 import { addAuthToApp } from './services/auth';
 
 export const run = () => {
@@ -33,6 +34,7 @@ export const run = () => {
 	app.use('/api/user', UserRouter);
 	app.use('/api/jobs', JobRouter);
 	app.use('/api/cv', CvRouter);
+	app.use('/api/projects', UserProjectRouter);
 
 	const port = process.env.port || 3333;
 	const server = app.listen(port, () => {

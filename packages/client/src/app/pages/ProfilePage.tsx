@@ -1,7 +1,9 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { User } from '@cv/api/interface';
-import { Routes, NavLink, Route } from 'react-router-dom';
+import {
+	Routes, NavLink, Route,
+} from 'react-router-dom';
 import { clsx } from 'clsx';
 
 import Experiences from '../components/Experiences';
@@ -13,9 +15,9 @@ import UserForm from '../components/UserForm';
 export function ProfilePage() {
 	const {
 		data: user, isLoading, error, refetch,
-	} = useQuery<User>(
-		'user',
-		async () => {
+	} = useQuery<User>({
+		queryKey: ['user'],
+		queryFn: async () => {
 			try {
 				const resUser = await axios.get<User>('/api/user', { withCredentials: true });
 				return resUser.data;
@@ -27,7 +29,17 @@ export function ProfilePage() {
 				throw err;
 			}
 		},
-	);
+		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+	});
+
+	// useCallback(() => {
+	// 	console.log(pathname);
+	// 	if (pathname === '/profile/projects') {
+
+	// 		// refetch();
+	// 	}
+	// }, [pathname]);
 
 	if (isLoading || !user) {
 		return <h1>Loading...</h1>;
@@ -102,7 +114,7 @@ export function ProfilePage() {
 								element={<Educations educations={educations} />}
 							/>
 							<Route
-								path='/projects'
+								path='/projects/*'
 								element={<Projects projects={projects} />}
 							/>
 							<Route

@@ -1,14 +1,20 @@
 import { Project } from '@cv/api/interface';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Button from './Button';
 import Input from './Input';
 
 export interface ProjectFormProps {
 	project?: Project | null;
+	onCreate?: (project: Project) => void;
+	onUpdate?: (project: Project) => void;
+	onDelete?: (project: Project) => void;
+	onCancel: () => void;
 }
 
-export default function ProjectForm({ project }: ProjectFormProps) {
+export default function ProjectForm({
+	project, onCreate, onUpdate, onCancel, onDelete,
+}: ProjectFormProps) {
 	const {
 		register,
 		handleSubmit,
@@ -20,10 +26,19 @@ export default function ProjectForm({ project }: ProjectFormProps) {
 
 	const save = handleSubmit(async (data) => {
 		try {
-			if (project?.id) {
-				await axios.put(`/api/projects/${project.id}`, data, { withCredentials: true });
+			let axiosRes: AxiosResponse<Project>;
+			if (!project) {
+				axiosRes = await axios.post<Project>('/api/projects', data, { withCredentials: true });
+
+				if (onCreate) {
+					onCreate(axiosRes.data);
+				}
 			} else {
-				await axios.post('/api/projects', data, { withCredentials: true });
+				axiosRes = await axios.put<Project>(`/api/projects/${project.id}`, data, { withCredentials: true });
+
+				if (onUpdate) {
+					onUpdate(axiosRes.data);
+				}
 			}
 
 			reset(data);
@@ -32,15 +47,27 @@ export default function ProjectForm({ project }: ProjectFormProps) {
 		}
 	});
 
+	const onClickDelete = async () => {
+		if (!project) {
+			return;
+		}
+
+		try {
+			await axios.delete<Project>(`/api/projects/${project.id}`, { withCredentials: true });
+			if (onDelete) {
+				onDelete(project);
+			}
+
+			reset();
+		} catch (err) {
+			alert(err);
+		}
+	};
+
 	return (
 		<form onSubmit={save} className='space-y-6'>
-			<div className='flex justify-end'>
-				<Button className='gap-2' color='secondary' type='submit' disabled={!isDirty}>
-					<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
-						<path strokeLinecap='round' strokeLinejoin='round' d='M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9' />
-					</svg>
-					Save
-				</Button>
+			<div className='prose'>
+				<h3>{ project ? 'Update Project' : 'Add Project'}</h3>
 			</div>
 			<div className='form-control'>
 				<label className='label pt-0 pb-2'>
@@ -88,6 +115,22 @@ export default function ProjectForm({ project }: ProjectFormProps) {
 					placeholder='exmp3'
 					{...register('description')}
 				/>
+			</div>
+			<div className='flex justify-between gap-2'>
+				<div>
+					{ project && <Button color='secondary' type='button' onClick={onClickDelete}>Delete</Button> }
+				</div>
+				<div className='flex gap-2'>
+					<Button outline color='secondary' type='button' onClick={onCancel}>
+						Cancel
+					</Button>
+					<Button className='gap-2' color='secondary' type='submit' disabled={!isDirty}>
+						<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
+							<path strokeLinecap='round' strokeLinejoin='round' d='M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9' />
+						</svg>
+						Save
+					</Button>
+				</div>
 			</div>
 		</form>
 	);
