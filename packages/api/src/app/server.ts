@@ -7,9 +7,13 @@ import * as express from 'express';
 import * as path from 'path';
 import AuthRouter from './routers/AuthRouter';
 import UserRouter from './routers/UserRouter';
+import ProfileRouter from './routers/ProfileRouter';
+import EducationRouter from './routers/EducationRouter';
+import ExperienceRouter from './routers/ExperienceRouter';
+import ProjectRouter from './routers/ProjectRouter';
+import VolunteerWorkRouter from './routers/VolunteerWorkRouter';
 import JobRouter from './routers/JobRouter';
 import CvRouter from './routers/CvRouter';
-import ProjectRouter from './routers/ProjectRouter';
 import { addAuthToApp } from './services/auth';
 
 export const run = () => {
@@ -32,9 +36,13 @@ export const run = () => {
 
 	app.use('/api', AuthRouter);
 	app.use('/api/user', UserRouter);
+	app.use('/api/profile', ProfileRouter);
+	app.use('/api/projects', ProjectRouter);
+	app.use('/api/educations', EducationRouter);
+	app.use('/api/experiences', ExperienceRouter);
+	app.use('/api/volunteer-works', VolunteerWorkRouter);
 	app.use('/api/jobs', JobRouter);
 	app.use('/api/cv', CvRouter);
-	app.use('/api/projects', ProjectRouter);
 
 	const port = process.env.port || 3333;
 	const server = app.listen(port, () => {
