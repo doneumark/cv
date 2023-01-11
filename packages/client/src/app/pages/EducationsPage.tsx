@@ -1,11 +1,11 @@
 import { useState, useMemo } from 'react';
 import { Education } from '@cv/api/interface';
-import Table from './Table';
-import Button from './Button';
+import Table from '../components/Table';
+import Button from '../components/Button';
 
 import { parseLinkedinDate, filterByQuery } from '../utils';
 
-import SearchInput from './SearchInput';
+import SearchInput from '../components/SearchInput';
 
 interface EducationsProps {
 	educations: Education[];

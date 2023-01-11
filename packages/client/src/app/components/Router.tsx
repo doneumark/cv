@@ -10,6 +10,11 @@ import SignupPage from '../pages/SignupPage';
 import LogoutPage from '../pages/LogoutPage';
 import UserState from '../state/UserState';
 
+import ExperiencesPage from '../pages/ExperiencesPage';
+import EducationsPage from '../pages/EducationsPage';
+import ProjectsPage from '../pages/ProjectsPage';
+import VolunteerWorksPage from '../pages/VolunteerWorksPage';
+
 export interface ProtectedRoutesProps {
 	children: React.ReactElement
 }
@@ -44,6 +49,38 @@ export default function Router() {
 				element={(
 					<ProtectedRoute>
 						<JobsPage />
+					</ProtectedRoute>
+				)}
+			/>
+			<Route
+				path='/experiences'
+				element={(
+					<ProtectedRoute>
+						<ExperiencesPage />
+					</ProtectedRoute>
+				)}
+			/>
+			<Route
+				path='/educations'
+				element={(
+					<ProtectedRoute>
+						<EducationsPage />
+					</ProtectedRoute>
+				)}
+			/>
+			<Route
+				path='/projects'
+				element={(
+					<ProtectedRoute>
+						<ProjectsPage />
+					</ProtectedRoute>
+				)}
+			/>
+			<Route
+				path='/volunteer'
+				element={(
+					<ProtectedRoute>
+						<VolunteerWorksPage />
 					</ProtectedRoute>
 				)}
 			/>

@@ -1,21 +1,46 @@
 import { Experience } from '@cv/api/interface';
 import { useState, useMemo } from 'react';
-import Table from './Table';
-import Button from './Button';
+import axios from 'axios';
+import { useQuery } from 'react-query';
+import Table from '../components/Table';
+import Button from '../components/Button';
 import { parseLinkedinDate, filterByQuery } from '../utils';
-import SearchInput from './SearchInput';
+import SearchInput from '../components/SearchInput';
 
-interface ExperiencesProps {
-	experiences: Experience[];
-}
-
-export default function Experiences({ experiences }: ExperiencesProps) {
+export default function Experiences() {
 	const [search, setSearch] = useState('');
+	const {
+		data: experiences, isLoading, error,
+	} = useQuery({
+		queryKey: ['experiences'],
+		queryFn: async () => {
+			try {
+				const resUser = await axios.get<Experience[]>('/api/user/experiences', { withCredentials: true });
+				return resUser.data;
+			} catch (err) {
+				if (axios.isAxiosError(err) && err.response) {
+					throw err.response.data;
+				}
+
+				throw err;
+			}
+		},
+		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+	});
 
 	const filteredExperiences = useMemo(
-		() => filterByQuery(search, experiences, ['company', 'description', 'title']),
+		() => filterByQuery(search, experiences || [], ['company', 'description', 'title']),
 		[experiences, search],
 	);
+
+	if (isLoading) {
+		return <h1>Loading...</h1>;
+	}
+
+	if (error) {
+		return <h1>ERROR</h1>;
+	}
 
 	return (
 		<div className='space-y-6'>

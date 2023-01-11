@@ -1,15 +1,8 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { User } from '@cv/api/interface';
-import {
-	Routes, NavLink, Route,
-} from 'react-router-dom';
+import { NavLink, Route } from 'react-router-dom';
 import { clsx } from 'clsx';
-
-import Experiences from '../components/Experiences';
-import Educations from '../components/Educations';
-import Projects from '../components/Projects';
-import VolunteerWorks from '../components/VolunteerWorks';
 import UserForm from '../components/UserForm';
 
 export function ProfilePage() {
@@ -32,14 +25,6 @@ export function ProfilePage() {
 		refetchOnWindowFocus: false,
 		refetchOnMount: false,
 	});
-
-	// useCallback(() => {
-	// 	console.log(pathname);
-	// 	if (pathname === '/profile/projects') {
-
-	// 		// refetch();
-	// 	}
-	// }, [pathname]);
 
 	if (isLoading || !user) {
 		return <h1>Loading...</h1>;
@@ -100,28 +85,10 @@ export function ProfilePage() {
 				</div>
 				<div className='rounded-b-box border-base-300 rounded-tr-box bg-base-100 relative overflow-x-auto'>
 					<div className='border-base-300 rounded-b-box rounded-tr-box border p-6'>
-						<Routes>
-							<Route
-								path='/'
-								element={<UserForm user={user} refetch={() => { refetch(); }} />}
-							/>
-							<Route
-								path='/experiences'
-								element={<Experiences experiences={experiences} />}
-							/>
-							<Route
-								path='/educations'
-								element={<Educations educations={educations} />}
-							/>
-							<Route
-								path='/projects/*'
-								element={<Projects projects={projects} />}
-							/>
-							<Route
-								path='/volunteer-works'
-								element={<VolunteerWorks volunteerWorks={volunteerWorks} />}
-							/>
-						</Routes>
+						<Route
+							path='/'
+							element={<UserForm user={user} refetch={() => { refetch(); }} />}
+						/>
 					</div>
 				</div>
 			</div>

@@ -5,12 +5,12 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import Table from './Table';
-import Button from './Button';
+import Table from '../components/Table';
+import Button from '../components/Button';
 import { parseLinkedinDate, filterByQuery } from '../utils';
-import SearchInput from './SearchInput';
-import Modal from './Modal';
-import ProjectForm from './ProjectForm';
+import SearchInput from '../components/SearchInput';
+import Modal from '../components/Modal';
+import ProjectForm from '../components/ProjectForm';
 
 interface ProjectRouteProps {
 	path: string;
