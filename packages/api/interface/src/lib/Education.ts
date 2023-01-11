@@ -1,1 +1,1 @@
-export { UserEducation as Education } from '@prisma/client';
+export { Education } from '@prisma/client';

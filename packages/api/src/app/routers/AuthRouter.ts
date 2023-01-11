@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { signIn, authenticate, AuthRequest } from '../services/auth';
+import { signIn, authenticate } from '../services/auth';
 import prisma from '../prisma';
 
 const AuthRouter = express.Router();
@@ -34,29 +34,6 @@ AuthRouter.post('/login', signIn, (req, res) => {
 AuthRouter.get('/me', authenticate, async (req, res) => {
 	try {
 		res.status(200).send(req.user);
-	} catch (err) {
-		res.status(400).send(err.message);
-	}
-});
-
-AuthRouter.get('/me/counts', authenticate, async (req: AuthRequest, res) => {
-	try {
-		const userCounts = await prisma.user.findUnique({
-			where: { id: req.user.id },
-			select: {
-				_count: {
-					select: {
-						educations: true,
-						experiences: true,
-						projects: true,
-						volunteerWorks: true,
-						jobs: true,
-					},
-				},
-			},
-		});
-
-		res.status(200).send(userCounts._count);
 	} catch (err) {
 		res.status(400).send(err.message);
 	}

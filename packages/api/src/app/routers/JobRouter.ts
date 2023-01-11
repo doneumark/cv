@@ -6,7 +6,7 @@ const JobRouter = express.Router();
 
 JobRouter.get('/', authenticate, async (req: AuthRequest, res) => {
 	try {
-		const jobs = await prisma.userProfile.findMany({
+		const jobs = await prisma.profile.findMany({
 			where: { userId: req.user.id },
 		});
 

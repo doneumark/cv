@@ -10,7 +10,7 @@ export default prismaBase.$extends({
 				needs: { id: true, linkedinUsername: true },
 				compute(user) {
 					return async () => {
-						const profile = await prismaBase.userProfile.findUnique({ where: { userId: user.id } });
+						const profile = await prismaBase.profile.findUnique({ where: { userId: user.id } });
 						const linkedinData = await getLinkedinDataFromUsername(user.linkedinUsername);
 
 						return prismaBase.user.update({

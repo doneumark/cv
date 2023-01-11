@@ -1,1 +1,1 @@
-export { UserProfile as Profile } from '@prisma/client';
+export { Profile } from '@prisma/client';

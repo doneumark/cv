@@ -1,1 +1,1 @@
-export { UserProject as Project } from '@prisma/client';
+export { Project } from '@prisma/client';

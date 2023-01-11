@@ -4,20 +4,24 @@ import prisma from '../prisma';
 
 const UserRouter = express.Router();
 
-UserRouter.get('/', authenticate, async (req: AuthRequest, res) => {
+UserRouter.get('/counts', authenticate, async (req: AuthRequest, res) => {
 	try {
-		const user = await prisma.user.findUnique({
+		const userCounts = await prisma.user.findUnique({
 			where: { id: req.user.id },
-			include: {
-				profile: true,
-				educations: true,
-				experiences: true,
-				projects: true,
-				volunteerWorks: true,
+			select: {
+				_count: {
+					select: {
+						educations: true,
+						experiences: true,
+						projects: true,
+						volunteerWorks: true,
+						jobs: true,
+					},
+				},
 			},
 		});
 
-		res.status(200).send(user);
+		res.status(200).send(userCounts._count);
 	} catch (err) {
 		res.status(400).send(err.message);
 	}

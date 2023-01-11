@@ -13,19 +13,19 @@ datasource db {
 }
 
 model User {
-    id               String              @id @default(uuid())
-    email            String              @unique
+    id               String          @id @default(uuid())
+    email            String          @unique
     fullName         String
     password         String
     linkedinUsername String?
-    profile          UserProfile?
+    profile          Profile?
     jobs             Job[]
-    experiences      UserExperience[]
-    educations       UserEducation[]
-    projects         UserProject[]
-    volunteerWorks   UserVolunteerWork[]
-    createdAt        DateTime            @default(now())
-    updatedAt        DateTime            @updatedAt
+    experiences      Experience[]
+    educations       Education[]
+    projects         Project[]
+    volunteerWorks   VolunteerWork[]
+    createdAt        DateTime        @default(now())
+    updatedAt        DateTime        @updatedAt
 }
 
 model Session {
@@ -45,7 +45,7 @@ model Job {
     updatedAt   DateTime @updatedAt
 }
 
-model UserProfile {
+model Profile {
     id         String   @id @default(uuid())
     occupation String?
     headline   String?
@@ -56,7 +56,7 @@ model UserProfile {
     updatedAt  DateTime @updatedAt
 }
 
-model UserExperience {
+model Experience {
     id            String   @id @default(uuid())
     title         String
     description   String?
@@ -73,7 +73,7 @@ model UserExperience {
     updatedAt     DateTime @updatedAt
 }
 
-model UserEducation {
+model Education {
     id            String   @id @default(uuid())
     school        String
     description   String?
@@ -92,7 +92,7 @@ model UserEducation {
     updatedAt     DateTime @updatedAt
 }
 
-model UserProject {
+model Project {
     id            String   @id @default(uuid())
     title         String
     description   String?
@@ -110,7 +110,7 @@ model UserProject {
     @@unique([id, userId])
 }
 
-model UserVolunteerWork {
+model VolunteerWork {
     id            String   @id @default(uuid())
     title         String
     description   String?

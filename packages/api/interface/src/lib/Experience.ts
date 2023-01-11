@@ -1,1 +1,1 @@
-export { UserExperience as Experience } from '@prisma/client';
+export { Experience } from '@prisma/client';
