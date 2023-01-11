@@ -17,16 +17,20 @@ const getPermittedProfileData = (data: Profile) => {
 const ProfileRouter = express.Router();
 
 ProfileRouter.get('/', authenticate, async (req: AuthRequest, res) => {
-	const { profileId } = req.params;
-
 	try {
-		const profile = await prisma.profile.findUnique({
+		const profile = await prisma.profile.upsert({
 			where: {
-				id: profileId,
+				userId: req.user.id,
+			},
+			create: {
+				userId: req.user.id,
+			},
+			update: {
+				userId: req.user.id,
 			},
 		});
 
-		if (!profile || profile.userId !== req.user.id) {
+		if (!profile) {
 			throw new Error('Profile not found');
 		}
 
@@ -57,7 +61,7 @@ ProfileRouter.put('/', authenticate, async (req: AuthRequest, res) => {
 	try {
 		const profile = await prisma.profile.findUnique({
 			where: {
-				id: req.user.id,
+				userId: req.user.id,
 			},
 		});
 

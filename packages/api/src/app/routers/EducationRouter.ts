@@ -31,6 +31,9 @@ EducationRouter.get('/', authenticate, async (req: AuthRequest, res) => {
 			where: {
 				userId: req.user.id,
 			},
+			orderBy: {
+				createdAt: 'desc',
+			},
 		});
 
 		res.status(200).send(educations);

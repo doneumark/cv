@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const parseLinkedinDate = (
 	day: number | null,
 	month: number | null,
@@ -28,4 +30,14 @@ export function filterByQuery<T, K extends keyof T>(
 
 		return fieldValues.some((value) => value.toLowerCase().includes(loweredCaseQuery));
 	});
+}
+
+export async function auth() {
+	const { data: user } = await axios.get('/api/me', { withCredentials: true });
+	return user;
+}
+
+export async function getUserCountsFromApi() {
+	const { data: resCounts } = await axios.get('/api/user/counts', { withCredentials: true });
+	return resCounts;
 }

@@ -1,12 +1,14 @@
 import { useRecoilState } from 'recoil';
 import { useQuery } from 'react-query';
-import axios from 'axios';
 
 import UserState from './state/UserState';
+import UserCountsState from './state/UserCountsState';
 import Input from './components/Input';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Router from './components/Router';
+import { auth, getUserCountsFromApi } from './utils';
+import Spinner from './components/Spinner';
 
 // icons: https://tailwindcss.com/blog/heroicons-v1
 // form: https://tailwindui.com/components/application-ui/forms/form-layouts
@@ -15,12 +17,14 @@ import Router from './components/Router';
 
 export function App() {
 	const [, setUser] = useRecoilState(UserState);
-	const { isLoading } = useQuery({
+	const [, setUserCounts] = useRecoilState(UserCountsState);
+
+	const { isLoading: isLoadingAuth } = useQuery({
 		queryKey: 'me',
 		queryFn: async () => {
 			try {
-				const resMe = await axios.get('/api/me', { withCredentials: true });
-				setUser(resMe.data);
+				const user = await auth();
+				setUser(user);
 			} catch (err) {
 				setUser(null);
 			}
@@ -29,8 +33,20 @@ export function App() {
 		refetchOnMount: false,
 	});
 
-	if (isLoading) {
-		return <h1>Loading...</h1>;
+	useQuery({
+		queryKey: 'userCounts',
+		queryFn: async () => {
+			const userCounts = await getUserCountsFromApi();
+			setUserCounts(userCounts);
+		},
+	});
+
+	if (isLoadingAuth) {
+		return (
+			<div className='w-screen h-screen'>
+				<Spinner />
+			</div>
+		);
 	}
 
 	return (

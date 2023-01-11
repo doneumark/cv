@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Education } from '@cv/api/interface';
+import { VolunteerWork } from '@cv/api/interface';
 import Table from '../components/Table';
 import Button from '../components/Button';
 import PageTitle from '../components/PageTitle';
@@ -9,20 +9,20 @@ import { parseLinkedinDate, filterByQuery } from '../utils';
 
 import SearchInput from '../components/SearchInput';
 
-interface EducationsProps {
-	educations: Education[];
+interface VolunteerWorksProps {
+	volunteerWorks: VolunteerWork[];
 }
 
-export default function Educations({ educations }: EducationsProps) {
+export default function VolunteerWorks({ volunteerWorks }: VolunteerWorksProps) {
 	const [search, setSearch] = useState('');
 
-	const filteredEducations = useMemo(
-		() => filterByQuery(search, educations, ['description', 'school', 'degreeName', 'field']),
-		[educations, search],
+	const filteredVolunteerWorks = useMemo(
+		() => filterByQuery(search, volunteerWorks, ['description', 'title', 'cause', 'company']),
+		[volunteerWorks, search],
 	);
 	return (
 		<>
-			<PageTitle title='Educations' />
+			<PageTitle title='Volunteer' />
 			<PageContent>
 				<div className='space-y-6'>
 					<div className='flex justify-between'>
@@ -31,50 +31,48 @@ export default function Educations({ educations }: EducationsProps) {
 							<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
 								<path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
 							</svg>
-							Add Education
+							Add Volunteer Work
 						</Button>
 					</div>
 					<Table>
 						<thead>
 							<tr>
-								<th>From</th>
-								<th>To</th>
-								<th>School</th>
-								<th>Degree</th>
-								<th>Field of Study</th>
-								<th>Grade</th>
-								<th>Description</th>
+								<th>from</th>
+								<th>to</th>
+								<th>company</th>
+								<th>title</th>
+								<th>cause</th>
+								<th>description</th>
 							</tr>
 						</thead>
 						<tbody>
-							{ !filteredEducations.length && (
+							{ !filteredVolunteerWorks.length && (
 								<tr>
-									<td colSpan={7} className='text-center'>
-										No education found
+									<td colSpan={6} className='text-center'>
+										No volunteer works found
 									</td>
 								</tr>
 							)}
-							{ filteredEducations.map((education) => (
-								<tr key={education.id}>
+							{ filteredVolunteerWorks.map((volunteerWork) => (
+								<tr key={volunteerWork.id}>
 									<td>
 										{ parseLinkedinDate(
-											education.startsAtDay,
-											education.startsAtMonth,
-											education.startsAtYear,
+											volunteerWork.startsAtDay,
+											volunteerWork.startsAtMonth,
+											volunteerWork.startsAtYear,
 										) }
 									</td>
 									<td>
 										{ parseLinkedinDate(
-											education.endsAtDay,
-											education.endsAtMonth,
-											education.endsAtYear,
+											volunteerWork.endsAtDay,
+											volunteerWork.endsAtMonth,
+											volunteerWork.endsAtYear,
 										) }
 									</td>
-									<td>{ education.school }</td>
-									<td>{ education.degreeName }</td>
-									<td>{ education.field }</td>
-									<td>{ education.grade }</td>
-									<td>{ education.description }</td>
+									<td>{ volunteerWork.company }</td>
+									<td>{ volunteerWork.title }</td>
+									<td>{ volunteerWork.cause }</td>
+									<td>{ volunteerWork.description }</td>
 								</tr>
 							)) }
 						</tbody>

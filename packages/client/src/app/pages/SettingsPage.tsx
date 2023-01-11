@@ -1,20 +1,20 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { Profile } from '@cv/api/interface';
-import ProfileForm from '../components/ProfileForm';
+import { User } from '@cv/api/interface';
+import UserForm from '../components/UserForm';
 import PageTitle from '../components/PageTitle';
 import PageContent from '../components/PageContent';
 import Spinner from '../components/Spinner';
 
-export function ProfilePage() {
+export function SettingsPage() {
 	const {
-		data: profile, isLoading, error,
-	} = useQuery<Profile>({
-		queryKey: ['profile'],
+		data: user, isLoading, error,
+	} = useQuery<User>({
+		queryKey: ['user'],
 		queryFn: async () => {
 			try {
-				const resProfile = await axios.get<Profile>('/api/profile', { withCredentials: true });
-				return resProfile.data;
+				const resUser = await axios.get<User>('/api/user', { withCredentials: true });
+				return resUser.data;
 			} catch (err) {
 				if (axios.isAxiosError(err) && err.response) {
 					throw err.response.data;
@@ -27,26 +27,26 @@ export function ProfilePage() {
 		refetchOnMount: false,
 	});
 
-	if (!profile || error) {
+	if (error || !user) {
 		return <h1>ERROR</h1>;
 	}
 
 	return (
 		<>
-			<PageTitle title='Profile' />
+			<PageTitle title='Settings' />
 			<PageContent>
-				{ isLoading
+				{isLoading
 					? (
 						<div className='w-full h-60'>
 							<Spinner />
 						</div>
 					)
 					: (
-						<ProfileForm profile={profile} />
+						<UserForm user={user} />
 					)}
 			</PageContent>
 		</>
 	);
 }
 
-export default ProfilePage;
+export default SettingsPage;

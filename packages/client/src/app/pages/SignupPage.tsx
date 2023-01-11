@@ -5,6 +5,8 @@ import { useRecoilState } from 'recoil';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import UserState from '../state/UserState';
+import PageContent from '../components/PageContent';
+import PageTitle from '../components/PageTitle';
 
 export default function SignupPage() {
 	const [user, setUser] = useRecoilState(UserState);
@@ -46,49 +48,45 @@ export default function SignupPage() {
 
 	return (
 		<>
-			<div className='prose'>
-				<h1 className='mt-3 mb-6'>Sign Up</h1>
-			</div>
-			<div className='card w-96 bg-base-100 card-bordered border-base-300'>
-				<div className='card-body'>
-					<form onSubmit={signup} className='space-y-6'>
-						<div className='form-control'>
-							<label className='label pt-0 pb-2'>
-								<span className='label-text'>Email</span>
+			<PageTitle title='Sign Up' />
+			<PageContent>
+				<form onSubmit={signup} className='space-y-6'>
+					<div className='form-control'>
+						<label className='label pt-0 pb-2'>
+							<span className='label-text'>Email</span>
+						</label>
+						<Input type='email' placeholder='username@company.com' {...register('email')} />
+						{ errors.email && (
+							<label className='label'>
+								<span className='label-text-alt'>{ errors.email.message }</span>
 							</label>
-							<Input type='email' placeholder='username@company.com' {...register('email')} />
-							{ errors.email && (
-								<label className='label'>
-									<span className='label-text-alt'>{ errors.email.message }</span>
-								</label>
-							) }
-						</div>
-						<div className='form-control'>
-							<label className='label pt-0 pb-2'>
-								<span className='label-text'>Password</span>
+						) }
+					</div>
+					<div className='form-control'>
+						<label className='label pt-0 pb-2'>
+							<span className='label-text'>Password</span>
+						</label>
+						<Input type='password' {...register('password')} />
+						{ errors.password && (
+							<label className='label'>
+								<span className='label-text-alt'>{ errors.password.message }</span>
 							</label>
-							<Input type='password' {...register('password')} />
-							{ errors.password && (
-								<label className='label'>
-									<span className='label-text-alt'>{ errors.password.message }</span>
-								</label>
-							) }
-						</div>
-						<div className='form-control'>
-							<label className='label pt-0 pb-2'>
-								<span className='label-text'>Full Name</span>
+						) }
+					</div>
+					<div className='form-control'>
+						<label className='label pt-0 pb-2'>
+							<span className='label-text'>Full Name</span>
+						</label>
+						<Input type='text' placeholder='John Doe' {...register('fullName')} />
+						{ errors.fullName && (
+							<label className='label'>
+								<span className='label-text-alt'>{ errors.fullName.message }</span>
 							</label>
-							<Input type='text' placeholder='John Doe' {...register('fullName')} />
-							{ errors.fullName && (
-								<label className='label'>
-									<span className='label-text-alt'>{ errors.fullName.message }</span>
-								</label>
-							) }
-						</div>
-						<Button color='primary' type='submit' block>Save</Button>
-					</form>
-				</div>
-			</div>
+						) }
+					</div>
+					<Button color='primary' type='submit' block>Save</Button>
+				</form>
+			</PageContent>
 		</>
 	);
 }

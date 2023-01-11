@@ -8,6 +8,9 @@ JobRouter.get('/', authenticate, async (req: AuthRequest, res) => {
 	try {
 		const jobs = await prisma.profile.findMany({
 			where: { userId: req.user.id },
+			orderBy: {
+				createdAt: 'desc',
+			},
 		});
 
 		res.status(200).send(jobs);

@@ -2,14 +2,14 @@ import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { User } from '@cv/api/interface';
 import axios from 'axios';
+import { useQueryClient } from 'react-query';
 
 import Button from './Button';
 import Input from './Input';
 
 const syncLinkedinToServer = async () => {
 	try {
-		const syncLinkedinRes = await axios.post('/api/user/linkedin');
-		return syncLinkedinRes.data;
+		await axios.post('/api/user/linkedin');
 	} catch (err) {
 		if (axios.isAxiosError(err) && err.response) {
 			throw err.response.data;
@@ -21,10 +21,11 @@ const syncLinkedinToServer = async () => {
 
 interface UserFormProps {
 	user: User,
-	refetch: () => void,
 }
 
-export default function UserForm({ user, refetch }: UserFormProps) {
+export default function UserForm({ user }: UserFormProps) {
+	const queryClient = useQueryClient();
+
 	const [isSyncingLinkedin, setIsSyncingLinkedin] = useState(false);
 
 	const {
@@ -62,26 +63,33 @@ export default function UserForm({ user, refetch }: UserFormProps) {
 
 	const syncLinkedin = useCallback(async () => {
 		setIsSyncingLinkedin(true);
-		try {
-			await syncLinkedinToServer();
-			await refetch();
-		} catch (err) {
-			alert(err);
-		}
-
+		await syncLinkedinToServer();
+		await queryClient.invalidateQueries({ queryKey: ['userCounts'] });
 		setIsSyncingLinkedin(false);
-	}, [refetch]);
+	}, [queryClient]);
 
 	return (
 		<form onSubmit={updateUser} className='space-y-6'>
 			<div className='grid grid-cols-6 gap-6'>
 				<div className='form-control col-span-6 sm:col-span-3'>
 					<label className='label pt-0 pb-2'>
-						<span className='label-text'>Full Name</span>
+						<span className='label-text'>Email</span>
 					</label>
-					<Input type='text' placeholder='John Doe' {...register('fullName')} />
+					<Input type='email' placeholder='user@company.com' {...register('email')} />
 				</div>
 				<div className='form-control col-span-6 sm:col-span-3'>
+					<label className='label pt-0 pb-2'>
+						<span className='label-text'>Password</span>
+					</label>
+					<Input type='password' placeholder='exmp2' {...register('password')} />
+				</div>
+				<div className='form-control col-span-12 sm:col-span-6'>
+					<label className='label pt-0 pb-2'>
+						<span className='label-text'>Full Name</span>
+					</label>
+					<Input type='text' placeholder='john doe' {...register('fullName')} />
+				</div>
+				<div className='form-control col-span-12 sm:col-span-6'>
 					<label className='label pt-0 pb-2'>
 						<span className='label-text'>Linkedin Username</span>
 					</label>
@@ -89,29 +97,6 @@ export default function UserForm({ user, refetch }: UserFormProps) {
 						<Input type='text' placeholder='johndoe12' className='flex-1 w-full' {...register('linkedinUsername')} />
 						{ errors.linkedinUsername && <p className='text-red-500'>{ `${errors.linkedinUsername.message}` }</p> }
 					</div>
-				</div>
-				<div className='form-control col-span-6 sm:col-span-3'>
-					<label className='label pt-0 pb-2'>
-						<span className='label-text'>Headline</span>
-					</label>
-					<Input type='text' placeholder='exmp1' {...register('profile.headline')} />
-				</div>
-				<div className='form-control col-span-6 sm:col-span-3'>
-					<label className='label pt-0 pb-2'>
-						<span className='label-text'>Occupation</span>
-					</label>
-					<Input type='text' placeholder='exmp2' {...register('profile.occupation')} />
-				</div>
-				<div className='form-control col-span-6 sm:col-span-4'>
-					<label className='label pt-0 pb-2'>
-						<span className='label-text'>Summary</span>
-					</label>
-					<textarea
-						className='textarea textarea-bordered block'
-						rows={2}
-						placeholder='exmp3'
-						{...register('profile.summary')}
-					/>
 				</div>
 			</div>
 			<div className='flex justify-end space-x-3'>

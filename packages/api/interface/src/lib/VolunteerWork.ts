@@ -1,1 +1,1 @@
-export { VolunteerWork } from '@prisma/client';
+export { VolunteerWork, } from '@prisma/client';

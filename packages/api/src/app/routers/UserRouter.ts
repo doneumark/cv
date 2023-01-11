@@ -4,6 +4,18 @@ import prisma from '../prisma';
 
 const UserRouter = express.Router();
 
+UserRouter.get('/', authenticate, async (req: AuthRequest, res) => {
+	try {
+		const user = await prisma.user.findUnique({
+			where: { id: req.user.id },
+		});
+
+		res.status(200).send(user);
+	} catch (err) {
+		res.status(400).send(err.message);
+	}
+});
+
 UserRouter.get('/counts', authenticate, async (req: AuthRequest, res) => {
 	try {
 		const userCounts = await prisma.user.findUnique({
@@ -60,8 +72,8 @@ UserRouter.post('/linkedin', authenticate, async (req: AuthRequest, res) => {
 			where: { id: req.user.id },
 		});
 
-		const syncedUser = await user.syncFromLinkedin();
-		res.status(200).send(syncedUser);
+		await user.syncFromLinkedin();
+		res.status(200).send();
 	} catch (err) {
 		console.log(err);
 		res.status(400).send(err.message);

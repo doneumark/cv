@@ -2,18 +2,19 @@ import {
 	Route, Routes, Navigate, useLocation,
 } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import JobsPage from '../pages/JobsPage';
 import ProfilePage from '../pages/ProfilePage';
+import ExperiencesPage from '../pages/ExperiencesPage';
+import ProjectsPage from '../pages/ProjectsPage';
+import EducationsPage from '../pages/EducationsPage';
+import VolunteerPage from '../pages/VolunteerPage';
+import SettingsPage from '../pages/SettingsPage';
+
+import JobsPage from '../pages/JobsPage';
 import CvPage from '../pages/CvPage';
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import LogoutPage from '../pages/LogoutPage';
 import UserState from '../state/UserState';
-
-import ExperiencesPage from '../pages/ExperiencesPage';
-import EducationsPage from '../pages/EducationsPage';
-import ProjectsPage from '../pages/ProjectsPage';
-import VolunteerWorksPage from '../pages/VolunteerWorksPage';
 
 export interface ProtectedRoutesProps {
 	children: React.ReactElement
@@ -45,7 +46,7 @@ export default function Router() {
 				)}
 			/>
 			<Route
-				path='/jobs'
+				path='/jobs/*'
 				element={(
 					<ProtectedRoute>
 						<JobsPage />
@@ -53,7 +54,7 @@ export default function Router() {
 				)}
 			/>
 			<Route
-				path='/experiences'
+				path='/experiences/*'
 				element={(
 					<ProtectedRoute>
 						<ExperiencesPage />
@@ -61,15 +62,15 @@ export default function Router() {
 				)}
 			/>
 			<Route
-				path='/educations'
+				path='/educations/*'
 				element={(
 					<ProtectedRoute>
-						<EducationsPage />
+						<EducationsPage educations={[]} />
 					</ProtectedRoute>
 				)}
 			/>
 			<Route
-				path='/projects'
+				path='/projects/*'
 				element={(
 					<ProtectedRoute>
 						<ProjectsPage />
@@ -77,18 +78,26 @@ export default function Router() {
 				)}
 			/>
 			<Route
-				path='/volunteer'
+				path='/volunteer/*'
 				element={(
 					<ProtectedRoute>
-						<VolunteerWorksPage />
+						<VolunteerPage volunteerWorks={[]} />
 					</ProtectedRoute>
 				)}
 			/>
 			<Route
-				path='/cv'
+				path='/cv/*'
 				element={(
 					<ProtectedRoute>
 						<CvPage />
+					</ProtectedRoute>
+				)}
+			/>
+			<Route
+				path='/settings'
+				element={(
+					<ProtectedRoute>
+						<SettingsPage />
 					</ProtectedRoute>
 				)}
 			/>

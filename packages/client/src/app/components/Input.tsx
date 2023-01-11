@@ -1,9 +1,11 @@
-import React, { InputHTMLAttributes, forwardRef } from 'react';
+import { InputHTMLAttributes, forwardRef } from 'react';
 import { clsx } from 'clsx';
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-	className?: string,
-}
+type Modify<T, R> = Omit<T, keyof R> & R;
+
+export type InputProps = Modify<InputHTMLAttributes<HTMLInputElement>, {
+	size?: 'lg' | 'md' | 'sm';
+}>;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
 	({ className, size, ...inputProps }, ref) => (

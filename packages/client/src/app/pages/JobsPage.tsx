@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import PageTitle from '../components/PageTitle';
+import PageContent from '../components/PageContent';
 
 interface JobProps {
 	job: Job;
@@ -38,34 +40,30 @@ function JobForm({ job }: JobProps) {
 
 	return (
 		<>
-			<div className='prose'>
-				<h1 className='mt-3 mb-6'>Jobs</h1>
-			</div>
-			<div className='card bg-base-100 card-bordered border-base-300'>
-				<div className='card-body p-6'>
-					<form onSubmit={updateJob} className='space-y-6'>
-						<div className='form-control'>
-							<label className='label pt-0 pb-2'>
-								<span className='label-text'>Title</span>
-							</label>
-							<Input type='text' placeholder='Job Title' {...register('title')} />
-						</div>
-						<div className='form-control'>
-							<label className='label pt-0 pb-2'>
-								<span className='label-text'>Description</span>
-							</label>
-							<textarea
-								className='textarea textarea-bordered w-full block'
-								rows={4}
-								placeholder='Jop description'
-								{...register('description')}
-							/>
-						</div>
-						<Button color='primary' type='submit'>Save</Button>
-						<Button color='secondary' type='submit'>Analyze</Button>
-					</form>
-				</div>
-			</div>
+			<PageTitle title='Jobs' />
+			<PageContent>
+				<form onSubmit={updateJob} className='space-y-6'>
+					<div className='form-control'>
+						<label className='label pt-0 pb-2'>
+							<span className='label-text'>Title</span>
+						</label>
+						<Input type='text' placeholder='Job Title' {...register('title')} />
+					</div>
+					<div className='form-control'>
+						<label className='label pt-0 pb-2'>
+							<span className='label-text'>Description</span>
+						</label>
+						<textarea
+							className='textarea textarea-bordered w-full block'
+							rows={4}
+							placeholder='Jop description'
+							{...register('description')}
+						/>
+					</div>
+					<Button color='primary' type='submit'>Save</Button>
+					<Button color='secondary' type='submit'>Analyze</Button>
+				</form>
+			</PageContent>
 		</>
 	);
 }

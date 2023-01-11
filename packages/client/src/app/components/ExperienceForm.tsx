@@ -1,35 +1,35 @@
-import { Project } from '@cv/api/interface';
+import { Experience } from '@cv/api/interface';
 import { useForm } from 'react-hook-form';
 import axios, { AxiosResponse } from 'axios';
 import Button from './Button';
 import Input from './Input';
 
-export interface ProjectFormProps {
-	project?: Project | null;
-	onSave?: (project: Project) => void;
-	onDelete?: (project: Project) => void;
+export interface ExperienceFormProps {
+	experience?: Experience | null;
+	onSave?: (experience: Experience) => void;
+	onDelete?: (experience: Experience) => void;
 	onCancel: () => void;
 }
 
-export default function ProjectForm({
-	project, onSave, onCancel, onDelete,
-}: ProjectFormProps) {
+export default function ExperienceForm({
+	experience, onSave, onCancel, onDelete,
+}: ExperienceFormProps) {
 	const {
 		register,
 		handleSubmit,
 		formState: { isDirty },
 		reset,
 	} = useForm({
-		defaultValues: project || {},
+		defaultValues: experience || {},
 	});
 
 	const save = handleSubmit(async (data) => {
 		try {
-			let axiosRes: AxiosResponse<Project>;
-			if (!project) {
-				axiosRes = await axios.post<Project>('/api/projects', data, { withCredentials: true });
+			let axiosRes: AxiosResponse<Experience>;
+			if (!experience) {
+				axiosRes = await axios.post<Experience>('/api/experiences', data, { withCredentials: true });
 			} else {
-				axiosRes = await axios.put<Project>(`/api/projects/${project.id}`, data, { withCredentials: true });
+				axiosRes = await axios.put<Experience>(`/api/experiences/${experience.id}`, data, { withCredentials: true });
 			}
 
 			if (onSave) {
@@ -43,14 +43,14 @@ export default function ProjectForm({
 	});
 
 	const onClickDelete = async () => {
-		if (!project) {
+		if (!experience) {
 			return;
 		}
 
 		try {
-			await axios.delete<Project>(`/api/projects/${project.id}`, { withCredentials: true });
+			await axios.delete<Experience>(`/api/experiences/${experience.id}`, { withCredentials: true });
 			if (onDelete) {
-				onDelete(project);
+				onDelete(experience);
 			}
 
 			reset();
@@ -65,7 +65,13 @@ export default function ProjectForm({
 				<label className='label pt-0 pb-2'>
 					<span className='label-text'>Title</span>
 				</label>
-				<Input type='text' placeholder='Project Title' {...register('title')} />
+				<Input type='text' placeholder='Experience Title' {...register('title')} />
+			</div>
+			<div className='form-control'>
+				<label className='label pt-0 pb-2'>
+					<span className='label-text'>Company</span>
+				</label>
+				<Input type='text' placeholder='Experience Title' {...register('company')} />
 			</div>
 			<div className='grid grid-cols-6 gap-6'>
 				<div className='col-span-6 sm:col-span-3'>
@@ -110,7 +116,7 @@ export default function ProjectForm({
 			</div>
 			<div className='flex justify-between gap-2'>
 				<div>
-					{ project && <Button color='secondary' type='button' onClick={onClickDelete}>Delete</Button> }
+					{ experience && <Button color='secondary' type='button' onClick={onClickDelete}>Delete</Button> }
 				</div>
 				<div className='flex gap-2'>
 					<Button outline color='secondary' type='button' onClick={onCancel}>

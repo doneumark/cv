@@ -5,6 +5,7 @@ export type ButtonProps = {
 	onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 	children?: React.ReactNode;
 	color?: 'primary' | 'secondary' | 'accent' | 'success';
+	size?: 'lg' | 'md' | 'sm';
 	disabled?: boolean;
 	outline?: boolean;
 	loading?: boolean;
@@ -15,6 +16,7 @@ export type ButtonProps = {
 export default function Button({
 	type,
 	color,
+	size,
 	children,
 	onClick,
 	disabled,
@@ -31,6 +33,7 @@ export default function Button({
 			className={clsx([
 				'btn',
 				color && `btn-${color}`,
+				size && `btn-${size}`,
 				outline && 'btn-outline',
 				color && outline && `btn-outline-${color}`,
 				disabled && 'btn-disabled',

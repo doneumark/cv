@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useRecoilState } from 'recoil';
+import Spinner from '../components/Spinner';
 import UserState from '../state/UserState';
 
 export default function LogoutPage() {
@@ -19,7 +20,11 @@ export default function LogoutPage() {
 	);
 
 	if (isLoading) {
-		return <h1>Loading...</h1>;
+		return (
+			<div className='w-screen h-screen'>
+				<Spinner />
+			</div>
+		);
 	}
 
 	return null;
