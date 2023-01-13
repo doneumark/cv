@@ -63,19 +63,21 @@ UserRouter.put('/', authenticate, async (req: AuthRequest, res) => {
 
 UserRouter.post('/linkedin', authenticate, async (req: AuthRequest, res) => {
 	try {
-		const { linkedinUsername } = req.user;
+		const { linkedinUsername } = req.body;
 		if (!linkedinUsername) {
 			throw new Error('Linkedin username is required');
 		}
 
-		const user = await prisma.user.findUnique({
+		const user = await prisma.user.update({
 			where: { id: req.user.id },
+			data: {
+				linkedinUsername,
+			},
 		});
 
 		await user.syncFromLinkedin();
 		res.status(200).send();
 	} catch (err) {
-		console.log(err);
 		res.status(400).send(err.message);
 	}
 });

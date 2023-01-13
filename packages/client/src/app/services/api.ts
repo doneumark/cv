@@ -17,6 +17,7 @@ export const logout = () => axiosApi.post('logout').then((res) => res.data);
 export const getUser = () => axiosApi.get<User>('user').then((res) => res.data);
 export const getUserCounts = () => axiosApi.get<UserCounts>('user/counts').then((res) => res.data);
 export const updateUser = (data: User) => axiosApi.put<User>('user', data).then((res) => res.data);
+export const syncFromLinkedin = (linkedinUsername: string | null) => axiosApi.post('user/linkedin', { linkedinUsername }).then((res) => res.data);
 
 export const getProfile = () => axiosApi.get<Profile>('profile').then((res) => res.data);
 export const updateProfile = (data: Profile) => axiosApi.put<Profile>('profile', data).then((res) => res.data);

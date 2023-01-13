@@ -15,6 +15,7 @@ import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import LogoutPage from '../pages/LogoutPage';
 import UserState from '../state/UserState';
+import SyncPage from '../pages/SyncPage';
 
 export interface ProtectedRoutesProps {
 	children: React.ReactElement
@@ -41,7 +42,7 @@ export default function Router() {
 				path='/sync/*'
 				element={(
 					<ProtectedRoute>
-						<div>SyncPage</div>
+						<SyncPage />
 					</ProtectedRoute>
 				)}
 			/>

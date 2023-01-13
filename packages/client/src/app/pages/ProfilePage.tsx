@@ -6,7 +6,7 @@ import PageTitle from '../components/PageTitle';
 import PageContent from '../components/PageContent';
 import LoadingContainer from '../components/LoadingContainer';
 
-export function ProfilePage() {
+export default function ProfilePage() {
 	const {
 		data: profile, isLoading,
 	} = useQuery<Profile>({
@@ -26,5 +26,3 @@ export function ProfilePage() {
 		</>
 	);
 }
-
-export default ProfilePage;

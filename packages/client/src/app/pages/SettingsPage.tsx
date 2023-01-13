@@ -4,41 +4,25 @@ import * as api from '../services/api';
 import UserForm from '../components/UserForm';
 import PageTitle from '../components/PageTitle';
 import PageContent from '../components/PageContent';
-import Spinner from '../components/Spinner';
+import LoadingContainer from '../components/LoadingContainer';
 
-export function SettingsPage() {
+export default function SettingsPage() {
 	const {
-		data: user, isLoading, error,
+		data: user, isLoading,
 	} = useQuery<User>({
 		queryKey: ['user'],
 		queryFn: api.getUser,
-		onError: (err) => {
-			alert(err);
-		},
 		refetchOnWindowFocus: false,
-		refetchOnMount: false,
 	});
-
-	if (error || !user) {
-		return <h1>ERROR</h1>;
-	}
 
 	return (
 		<>
-			<PageTitle title='Settings' />
+			<PageTitle title='User' />
 			<PageContent>
-				{isLoading
-					? (
-						<div className='w-full h-60'>
-							<Spinner />
-						</div>
-					)
-					: (
-						<UserForm user={user} />
-					)}
+				<LoadingContainer height={200} isLoading={isLoading}>
+					<UserForm user={user || undefined} />
+				</LoadingContainer>
 			</PageContent>
 		</>
 	);
 }
-
-export default SettingsPage;

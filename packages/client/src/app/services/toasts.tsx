@@ -74,12 +74,12 @@ function ToastElement({ toast, style }: ToastElementInterface) {
 	const { removeToast } = useToast();
 
 	useEffect(() => {
-		const timeId = setTimeout(() => {
+		const toastTimeout = setTimeout(() => {
 			removeToast(toast);
 		}, 5000);
 
 		return () => {
-			clearTimeout(timeId);
+			clearTimeout(toastTimeout);
 		};
 	});
 
