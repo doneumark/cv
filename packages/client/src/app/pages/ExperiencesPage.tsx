@@ -3,7 +3,6 @@ import {
 	useMatch, useResolvedPath, useNavigate, Link, useParams,
 } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import AnimateHeight from 'react-animate-height';
 import { Experience } from '@cv/api/interface';
 import * as api from '../services/api';
 import Button from '../components/Button';
@@ -17,6 +16,7 @@ import Spinner from '../components/Spinner';
 import { useToast } from '../services/toasts';
 import PlusIcon from '../icons/PlusIcon';
 import PencilIcon from '../icons/PencilIcon';
+import LoadingContainer from '../components/LoadingContainer';
 
 interface ExperienceBoxProps {
 	experience: Experience;
@@ -107,32 +107,20 @@ function UpdateExperienceRoute({ path }: ExperienceRouteProps) {
 			<div className='prose mb-6'>
 				<h3>Update Experience</h3>
 			</div>
-			<AnimateHeight
-				duration={300}
-				height={isLoading ? 400 : 'auto'}
-				className='h-full'
-			>
-				{ isLoading
-					? (
-						<div style={{ height: 400 }}>
-							<Spinner />
-						</div>
-					)
-					: (
-						<ExperienceForm
-							experience={experience}
-							onSave={() => {
-								addToast({ message: 'Experience updated successfully', type: 'success' });
-								navigate(experiencesPath);
-							}}
-							onDelete={() => {
-								addToast({ message: 'Experience deleted successfully', type: 'info' });
-								navigate(experiencesPath);
-							}}
-							onCancel={() => navigate(experiencesPath)}
-						/>
-					)}
-			</AnimateHeight>
+			<LoadingContainer isLoading={isLoading}>
+				<ExperienceForm
+					experience={experience}
+					onSave={() => {
+						addToast({ message: 'Experience updated successfully', type: 'success' });
+						navigate(experiencesPath);
+					}}
+					onDelete={() => {
+						addToast({ message: 'Experience deleted successfully', type: 'info' });
+						navigate(experiencesPath);
+					}}
+					onCancel={() => navigate(experiencesPath)}
+				/>
+			</LoadingContainer>
 		</Modal>
 	);
 }

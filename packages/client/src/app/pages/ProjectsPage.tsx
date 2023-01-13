@@ -3,7 +3,6 @@ import {
 	useMatch, useResolvedPath, useNavigate, Link, useParams,
 } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import AnimateHeight from 'react-animate-height';
 import { Project } from '@cv/api/interface';
 import * as api from '../services/api';
 import Button from '../components/Button';
@@ -17,6 +16,7 @@ import Spinner from '../components/Spinner';
 import PlusIcon from '../icons/PlusIcon';
 import PencilIcon from '../icons/PencilIcon';
 import { useToast } from '../services/toasts';
+import LoadingContainer from '../components/LoadingContainer';
 
 interface ProjectBoxProps {
 	project: Project;
@@ -107,32 +107,20 @@ function UpdateProjectRoute({ path }: ProjectRouteProps) {
 			<div className='prose mb-6'>
 				<h3>Update Project</h3>
 			</div>
-			<AnimateHeight
-				duration={300}
-				height={isLoading ? 400 : 'auto'}
-				className='h-full'
-			>
-				{ isLoading
-					? (
-						<div className='w-full h-60'>
-							<Spinner />
-						</div>
-					)
-					: (
-						<ProjectForm
-							project={project}
-							onSave={() => {
-								addToast({ message: 'Project updated successfully', type: 'success' });
-								navigate(projectsPath);
-							}}
-							onDelete={() => {
-								addToast({ message: 'Project deleted successfully', type: 'info' });
-								navigate(projectsPath);
-							}}
-							onCancel={() => navigate(projectsPath)}
-						/>
-					) }
-			</AnimateHeight>
+			<LoadingContainer isLoading={isLoading}>
+				<ProjectForm
+					project={project}
+					onSave={() => {
+						addToast({ message: 'Project updated successfully', type: 'success' });
+						navigate(projectsPath);
+					}}
+					onDelete={() => {
+						addToast({ message: 'Project deleted successfully', type: 'info' });
+						navigate(projectsPath);
+					}}
+					onCancel={() => navigate(projectsPath)}
+				/>
+			</LoadingContainer>
 		</Modal>
 	);
 }
