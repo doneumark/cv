@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { User } from '@cv/api/interface';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { useEffect } from 'react';
 import * as api from '../services/api';
 import Button from '../components/Button';
 import LoadingContainer from '../components/LoadingContainer';
@@ -31,6 +32,8 @@ function SyncLinkedinForm({ user }: SyncLinkedinFormProps) {
 	const { addToast } = useToast();
 
 	const queryClient = useQueryClient();
+
+	useEffect(() => reset(user), [user, reset]);
 
 	const syncLinkedin = async (data: SyncLinkedin) => {
 		try {

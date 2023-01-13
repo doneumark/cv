@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useRecoilState } from 'recoil';
+import { useEffect, useState } from 'react';
 import UserState from '../state/UserState';
 import UserCountsState from '../state/UserCountsState';
 
@@ -11,16 +12,37 @@ interface SidebarLinkProps {
 	icon?: React.ReactElement;
 }
 
+const NUDGE_DURATION = 500;
+
 function SidebarLink({
 	to, text, number, icon,
 }: SidebarLinkProps) {
+	const isNumberExists = !!number || number === 0;
+	const [isNudging, setIsNudging] = useState(false);
+
+	useEffect(() => {
+		if (!isNumberExists) {
+			return () => {};
+		}
+
+		setIsNudging(true);
+
+		const nudgeTimeout = setTimeout(() => {
+			setIsNudging(false);
+		}, NUDGE_DURATION);
+
+		return () => {
+			clearTimeout(nudgeTimeout);
+		};
+	}, [isNumberExists, number]);
+
 	return (
 		<NavLink className={({ isActive }) => clsx(['flex gap-4', isActive && 'active'])} to={to}>
 			{({ isActive }) => (
 				<>
 					{ icon }
 					<span className='flex-1'>{ text }</span>
-					{ (number || number === 0) && <span className={clsx(['badge badge-sm flex-none lowercase', isActive && 'badge-ghost'])}>{ number }</span> }
+					{ isNumberExists && <span className={clsx(['badge badge-sm flex-none lowercase', isActive && 'badge-ghost', isNudging && 'animate-shake'])}>{ number }</span> }
 				</>
 			)}
 		</NavLink>
