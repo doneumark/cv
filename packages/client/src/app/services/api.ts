@@ -39,11 +39,11 @@ export const getProject = (id: string) => axiosApi.get<Project>(`projects/${id}`
 export const updateProject = (id: string, data: Project) => axiosApi.put<Project>(`projects/${id}`, data).then((res) => res.data);
 export const deleteProject = (id: string) => axiosApi.delete<Project>(`projects/${id}`).then((res) => res.data);
 
-export const getVolunteerWorks = () => axiosApi.get<VolunteerWork[]>('volunteerWorks').then((res) => res.data);
-export const createVolunteerWork = (data: VolunteerWork) => axiosApi.post<VolunteerWork>('volunteerWorks', data).then((res) => res.data);
-export const getVolunteerWork = (id: string) => axiosApi.get<VolunteerWork>(`volunteerWorks/${id}`).then((res) => res.data);
-export const updateVolunteerWork = (id: string, data: VolunteerWork) => axiosApi.put<VolunteerWork>(`volunteerWorks/${id}`, data).then((res) => res.data);
-export const deleteVolunteerWork = (id: string) => axiosApi.delete<VolunteerWork>(`volunteerWorks/${id}`).then((res) => res.data);
+export const getVolunteerWorks = () => axiosApi.get<VolunteerWork[]>('volunteer-works').then((res) => res.data);
+export const createVolunteerWork = (data: VolunteerWork) => axiosApi.post<VolunteerWork>('volunteer-works', data).then((res) => res.data);
+export const getVolunteerWork = (id: string) => axiosApi.get<VolunteerWork>(`volunteer-works/${id}`).then((res) => res.data);
+export const updateVolunteerWork = (id: string, data: VolunteerWork) => axiosApi.put<VolunteerWork>(`volunteer-works/${id}`, data).then((res) => res.data);
+export const deleteVolunteerWork = (id: string) => axiosApi.delete<VolunteerWork>(`volunteer-works/${id}`).then((res) => res.data);
 
 export const getJobs = () => axiosApi.get<Job[]>('jobs').then((res) => res.data);
 export const createJob = (data: Job) => axiosApi.post<Job>('jobs', data).then((res) => res.data);

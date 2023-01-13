@@ -1,7 +1,5 @@
 import { useState, useMemo } from 'react';
-import {
-	useMatch, useResolvedPath, useNavigate, Link, useParams,
-} from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { Project } from '@cv/api/interface';
 import * as api from '../services/api';
@@ -12,11 +10,10 @@ import Modal from '../components/Modal';
 import ProjectForm from '../components/ProjectForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
-import Spinner from '../components/Spinner';
 import PlusIcon from '../icons/PlusIcon';
 import PencilIcon from '../icons/PencilIcon';
-import { useToast } from '../services/toasts';
 import LoadingContainer from '../components/LoadingContainer';
+import { useFormRoute } from '../services/routes';
 
 interface ProjectBoxProps {
 	project: Project;
@@ -46,7 +43,7 @@ function ProjectBox({ project }: ProjectBoxProps) {
 								project.endsAtYear,
 							) || 'Now' }
 						</div>
-						{ project.description }
+						{ `${project.description}` }
 					</div>
 				</div>
 				<div className='hidden group-hover:block'>
@@ -57,68 +54,40 @@ function ProjectBox({ project }: ProjectBoxProps) {
 	);
 }
 
-interface ProjectRouteProps {
-	path: string;
-}
-
-function CreateProjectRoute({ path }: ProjectRouteProps) {
-	const { addToast } = useToast();
+function CreateProjectModal() {
+	const { isCreatePath, rootPath: projectsPath } = useFormRoute();
 	const navigate = useNavigate();
 
-	const { pathname: projectsPath } = useResolvedPath('');
-	const { pathname: createProjectPath } = useResolvedPath(path);
-	const isCreateProjectPath = !!useMatch(createProjectPath);
-
 	return (
-		<Modal show={isCreateProjectPath} onClose={() => navigate(projectsPath)}>
+		<Modal show={isCreatePath} onClose={() => navigate(projectsPath)}>
 			<div className='prose mb-6'>
 				<h3>Create Project</h3>
 			</div>
-			<ProjectForm
-				project={null}
-				onSave={() => {
-					addToast({ message: 'Project created successfully', type: 'success' });
-					navigate(projectsPath);
-				}}
-				onCancel={() => navigate(projectsPath)}
-			/>
+			<ProjectForm onClose={() => navigate(projectsPath)} />
 		</Modal>
 	);
 }
 
-function UpdateProjectRoute({ path }: ProjectRouteProps) {
-	const { addToast } = useToast();
+function UpdateProjectModal() {
+	const { isUpdatePath, pathParam: projectId, rootPath: projectsPath } = useFormRoute();
 	const navigate = useNavigate();
-	const { pathname: projectsPath } = useResolvedPath('');
-	const { pathname: updateProjectPath } = useResolvedPath(path);
-	const { '*': relativePath } = useParams();
-	const projectId = relativePath?.split('/')[0];
-	const isUpdateProjectPath = !!useMatch(updateProjectPath) && projectId !== 'new';
 
 	const { data: project, isLoading } = useQuery({
 		queryKey: ['project', projectId],
-		queryFn: () => (
-			isUpdateProjectPath && projectId ? api.getProject(projectId) : null
-		),
+		queryFn: () => (projectId ? api.getProject(projectId) : null),
+		enabled: isUpdatePath,
+		refetchOnWindowFocus: false,
 	});
 
 	return (
-		<Modal show={isUpdateProjectPath} onClose={() => navigate(projectsPath)}>
+		<Modal show={isUpdatePath} onClose={() => navigate(projectsPath)}>
 			<div className='prose mb-6'>
 				<h3>Update Project</h3>
 			</div>
 			<LoadingContainer height={400} isLoading={isLoading}>
 				<ProjectForm
-					project={project}
-					onSave={() => {
-						addToast({ message: 'Project updated successfully', type: 'success' });
-						navigate(projectsPath);
-					}}
-					onDelete={() => {
-						addToast({ message: 'Project deleted successfully', type: 'info' });
-						navigate(projectsPath);
-					}}
-					onCancel={() => navigate(projectsPath)}
+					project={project || undefined}
+					onClose={() => navigate(projectsPath)}
 				/>
 			</LoadingContainer>
 		</Modal>
@@ -142,36 +111,31 @@ export default function Projects() {
 		<>
 			<PageTitle title='Projects' />
 			<PageContent>
-				{ isLoading
-					? (
-						<div className='w-full h-60'>
-							<Spinner />
+				<LoadingContainer height={200} isLoading={isLoading}>
+					<div className='space-y-6'>
+						<div className='flex justify-between'>
+							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+							<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
+								<PlusIcon />
+								Add Project
+							</Button>
 						</div>
-					)
-					: (
-						<div className='space-y-6'>
-							<div className='flex justify-between'>
-								<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
-								<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
-									<PlusIcon />
-									Add Project
-								</Button>
-							</div>
+
+						<div className='space-y-3'>
+							{ filteredProjects.map((project) => (
+								<ProjectBox project={project} key={`project-box-${project.id}`} />
+							)) }
 							{ !filteredProjects.length && (
 								<div className='text-center'>
-									No projects found
+									No projects added yet
 								</div>
 							)}
-							<div className='space-y-3'>
-								{ filteredProjects.map((project) => (
-									<ProjectBox project={project} />
-								)) }
-							</div>
 						</div>
-					)}
+					</div>
+				</LoadingContainer>
 			</PageContent>
-			<CreateProjectRoute path='new' />
-			<UpdateProjectRoute path=':projectId' />
+			<CreateProjectModal />
+			<UpdateProjectModal />
 		</>
 	);
 }

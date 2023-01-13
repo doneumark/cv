@@ -97,7 +97,7 @@ export default function Router() {
 				path='/volunteer/*'
 				element={(
 					<ProtectedRoute>
-						<VolunteerPage volunteerWorks={[]} />
+						<VolunteerPage />
 					</ProtectedRoute>
 				)}
 			/>
