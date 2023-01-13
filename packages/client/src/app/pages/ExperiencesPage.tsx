@@ -1,7 +1,5 @@
 import { useState, useMemo } from 'react';
-import {
-	useMatch, useResolvedPath, useNavigate, Link, useParams,
-} from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { Experience } from '@cv/api/interface';
 import * as api from '../services/api';
@@ -12,11 +10,10 @@ import Modal from '../components/Modal';
 import ExperienceForm from '../components/ExperienceForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
-import Spinner from '../components/Spinner';
-import { useToast } from '../services/toasts';
 import PlusIcon from '../icons/PlusIcon';
 import PencilIcon from '../icons/PencilIcon';
 import LoadingContainer from '../components/LoadingContainer';
+import { useFormRoute } from '../services/routes';
 
 interface ExperienceBoxProps {
 	experience: Experience;
@@ -58,67 +55,40 @@ function ExperienceBox({ experience }: ExperienceBoxProps) {
 	);
 }
 
-interface ExperienceRouteProps {
-	path: string;
-}
-
-function CreateExperienceRoute({ path }: ExperienceRouteProps) {
-	const { addToast } = useToast();
+function CreateExperienceModal() {
+	const { isCreatePath, rootPath: experiencesPath } = useFormRoute();
 	const navigate = useNavigate();
-	const { pathname: experiencesPath } = useResolvedPath('');
-	const { pathname: createExperiencePath } = useResolvedPath(path);
-	const isCreateExperiencePath = !!useMatch(createExperiencePath);
 
 	return (
-		<Modal show={isCreateExperiencePath} onClose={() => navigate(experiencesPath)}>
+		<Modal show={isCreatePath} onClose={() => navigate(experiencesPath)}>
 			<div className='prose mb-6'>
 				<h3>Create Experience</h3>
 			</div>
-			<ExperienceForm
-				experience={null}
-				onSave={() => {
-					addToast({ message: 'Experience created successfully', type: 'success' });
-					navigate(experiencesPath);
-				}}
-				onCancel={() => navigate(experiencesPath)}
-			/>
+			<ExperienceForm onClose={() => navigate(experiencesPath)} />
 		</Modal>
 	);
 }
 
-function UpdateExperienceRoute({ path }: ExperienceRouteProps) {
-	const { addToast } = useToast();
+function UpdateExperienceModal() {
+	const { isUpdatePath, pathParam: experienceId, rootPath: experiencesPath } = useFormRoute();
 	const navigate = useNavigate();
-	const { pathname: experiencesPath } = useResolvedPath('');
-	const { pathname: updateExperiencePath } = useResolvedPath(path);
-	const { '*': relativePath } = useParams();
-	const experienceId = relativePath?.split('/')[0];
-	const isUpdateExperiencePath = !!useMatch(updateExperiencePath) && experienceId !== 'new';
 
 	const { data: experience, isLoading } = useQuery({
 		queryKey: ['experience', experienceId],
-		queryFn: () => (
-			isUpdateExperiencePath && experienceId ? api.getExperience(experienceId) : null
-		),
+		queryFn: () => (experienceId ? api.getExperience(experienceId) : null),
+		enabled: isUpdatePath,
+		refetchOnWindowFocus: false,
 	});
 
 	return (
-		<Modal show={isUpdateExperiencePath} onClose={() => navigate(experiencesPath)}>
+		<Modal show={isUpdatePath} onClose={() => navigate(experiencesPath)}>
 			<div className='prose mb-6'>
 				<h3>Update Experience</h3>
 			</div>
-			<LoadingContainer isLoading={isLoading}>
+			<LoadingContainer height={400} isLoading={isLoading}>
 				<ExperienceForm
-					experience={experience}
-					onSave={() => {
-						addToast({ message: 'Experience updated successfully', type: 'success' });
-						navigate(experiencesPath);
-					}}
-					onDelete={() => {
-						addToast({ message: 'Experience deleted successfully', type: 'info' });
-						navigate(experiencesPath);
-					}}
-					onCancel={() => navigate(experiencesPath)}
+					experience={experience || undefined}
+					onClose={() => navigate(experiencesPath)}
 				/>
 			</LoadingContainer>
 		</Modal>
@@ -142,36 +112,31 @@ export default function Experiences() {
 		<>
 			<PageTitle title='Experiences' />
 			<PageContent>
-				{ isLoading
-					? (
-						<div className='w-full h-60'>
-							<Spinner />
+				<LoadingContainer height={200} isLoading={isLoading}>
+					<div className='space-y-6'>
+						<div className='flex justify-between'>
+							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+							<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
+								<PlusIcon />
+								Add Experience
+							</Button>
 						</div>
-					)
-					: (
-						<div className='space-y-6'>
-							<div className='flex justify-between'>
-								<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
-								<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
-									<PlusIcon />
-									Add Experience
-								</Button>
-							</div>
+
+						<div className='space-y-3'>
+							{ filteredExperiences.map((experience) => (
+								<ExperienceBox experience={experience} key={`experience-box-${experience.id}`} />
+							)) }
 							{ !filteredExperiences.length && (
 								<div className='text-center'>
-									No experiences found
+									No experiences added yet
 								</div>
 							)}
-							<div className='space-y-3'>
-								{ filteredExperiences.map((experience) => (
-									<ExperienceBox experience={experience} />
-								)) }
-							</div>
 						</div>
-					)}
+					</div>
+				</LoadingContainer>
 			</PageContent>
-			<CreateExperienceRoute path='new' />
-			<UpdateExperienceRoute path=':experienceId' />
+			<CreateExperienceModal />
+			<UpdateExperienceModal />
 		</>
 	);
 }

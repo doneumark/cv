@@ -107,7 +107,7 @@ function UpdateProjectRoute({ path }: ProjectRouteProps) {
 			<div className='prose mb-6'>
 				<h3>Update Project</h3>
 			</div>
-			<LoadingContainer isLoading={isLoading}>
+			<LoadingContainer height={400} isLoading={isLoading}>
 				<ProjectForm
 					project={project}
 					onSave={() => {
