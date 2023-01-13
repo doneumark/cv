@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
-import axios from 'axios';
 import { User } from '@cv/api/interface';
+import * as api from '../services/api';
 import UserForm from '../components/UserForm';
 import PageTitle from '../components/PageTitle';
 import PageContent from '../components/PageContent';
@@ -11,17 +11,9 @@ export function SettingsPage() {
 		data: user, isLoading, error,
 	} = useQuery<User>({
 		queryKey: ['user'],
-		queryFn: async () => {
-			try {
-				const resUser = await axios.get<User>('/api/user', { withCredentials: true });
-				return resUser.data;
-			} catch (err) {
-				if (axios.isAxiosError(err) && err.response) {
-					throw err.response.data;
-				}
-
-				throw err;
-			}
+		queryFn: api.getUser,
+		onError: (err) => {
+			alert(err);
 		},
 		refetchOnWindowFocus: false,
 		refetchOnMount: false,

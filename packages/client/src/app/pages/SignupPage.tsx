@@ -1,88 +1,51 @@
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import { User } from '@cv/api/interface';
+import * as api from '../services/api';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import UserState from '../state/UserState';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
+import Label from '../components/Label';
 
 export default function SignupPage() {
 	const [user, setUser] = useRecoilState(UserState);
 	const {
 		register,
 		handleSubmit,
-		setError,
-		formState: { errors },
-	} = useForm({
-		defaultValues: {
-			email: '',
-			password: '',
-			fullName: '',
-		},
-	});
+	} = useForm<User>();
 
 	if (user) {
 		return <Navigate to='/' />;
 	}
 
-	const signup = handleSubmit(async (data) => {
+	const signup = async (data: User) => {
 		try {
-			const resUser = await axios.post('/api/signup', data);
-			setUser(resUser.data);
+			const signedUpUser = await api.signup(data);
+			setUser(signedUpUser);
 		} catch (err) {
-			if (axios.isAxiosError(err)) {
-				setError('password', { message: String(err.response?.data) });
-				return;
-			}
-
-			if (err instanceof Error) {
-				setError('password', { message: err.message });
-				return;
-			}
-
-			setError('password', { message: 'Unknown error' });
+			alert(err);
 		}
-	});
+	};
 
 	return (
 		<>
 			<PageTitle title='Sign Up' />
 			<PageContent>
-				<form onSubmit={signup} className='space-y-6'>
+				<form onSubmit={handleSubmit(signup)} className='space-y-6'>
 					<div className='form-control'>
-						<label className='label pt-0 pb-2'>
-							<span className='label-text'>Email</span>
-						</label>
+						<Label text='Email' />
 						<Input type='email' placeholder='username@company.com' {...register('email')} />
-						{ errors.email && (
-							<label className='label'>
-								<span className='label-text-alt'>{ errors.email.message }</span>
-							</label>
-						) }
 					</div>
 					<div className='form-control'>
-						<label className='label pt-0 pb-2'>
-							<span className='label-text'>Password</span>
-						</label>
+						<Label text='Password' />
 						<Input type='password' {...register('password')} />
-						{ errors.password && (
-							<label className='label'>
-								<span className='label-text-alt'>{ errors.password.message }</span>
-							</label>
-						) }
 					</div>
 					<div className='form-control'>
-						<label className='label pt-0 pb-2'>
-							<span className='label-text'>Full Name</span>
-						</label>
+						<Label text='Full Name' />
 						<Input type='text' placeholder='John Doe' {...register('fullName')} />
-						{ errors.fullName && (
-							<label className='label'>
-								<span className='label-text-alt'>{ errors.fullName.message }</span>
-							</label>
-						) }
 					</div>
 					<Button color='primary' type='submit' block>Save</Button>
 				</form>

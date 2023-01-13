@@ -38,6 +38,22 @@ export default function Router() {
 			<Route path='/login' element={<LoginPage />} />
 			<Route path='/signup' element={<SignupPage />} />
 			<Route
+				path='/sync/*'
+				element={(
+					<ProtectedRoute>
+						<div>SyncPage</div>
+					</ProtectedRoute>
+				)}
+			/>
+			<Route
+				path='/generate-cv/*'
+				element={(
+					<ProtectedRoute>
+						<div>GenerateCvPage</div>
+					</ProtectedRoute>
+				)}
+			/>
+			<Route
 				path='/profile/*'
 				element={(
 					<ProtectedRoute>
@@ -65,7 +81,7 @@ export default function Router() {
 				path='/educations/*'
 				element={(
 					<ProtectedRoute>
-						<EducationsPage educations={[]} />
+						<EducationsPage />
 					</ProtectedRoute>
 				)}
 			/>
@@ -86,7 +102,7 @@ export default function Router() {
 				)}
 			/>
 			<Route
-				path='/cv/*'
+				path='/cvs/*'
 				element={(
 					<ProtectedRoute>
 						<CvPage />

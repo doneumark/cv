@@ -5,7 +5,7 @@ import Button from '../components/Button';
 import PageTitle from '../components/PageTitle';
 import PageContent from '../components/PageContent';
 
-import { parseLinkedinDate, filterByQuery } from '../utils';
+import { parseApiDate, filterByQuery } from '../services/misc';
 
 import SearchInput from '../components/SearchInput';
 
@@ -56,14 +56,14 @@ export default function VolunteerWorks({ volunteerWorks }: VolunteerWorksProps) 
 							{ filteredVolunteerWorks.map((volunteerWork) => (
 								<tr key={volunteerWork.id}>
 									<td>
-										{ parseLinkedinDate(
+										{ parseApiDate(
 											volunteerWork.startsAtDay,
 											volunteerWork.startsAtMonth,
 											volunteerWork.startsAtYear,
 										) }
 									</td>
 									<td>
-										{ parseLinkedinDate(
+										{ parseApiDate(
 											volunteerWork.endsAtDay,
 											volunteerWork.endsAtMonth,
 											volunteerWork.endsAtYear,

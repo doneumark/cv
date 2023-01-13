@@ -1,38 +1,73 @@
-import { useState, useMemo, useCallback } from 'react';
-import { Experience } from '@cv/api/interface';
+import { useState, useMemo } from 'react';
 import {
 	useMatch, useResolvedPath, useNavigate, Link, useParams,
 } from 'react-router-dom';
-import axios from 'axios';
-import { useQuery, useQueryClient } from 'react-query';
-import Table from '../components/Table';
+import { useQuery } from 'react-query';
+import AnimateHeight from 'react-animate-height';
+import { Experience } from '@cv/api/interface';
+import * as api from '../services/api';
 import Button from '../components/Button';
-import { parseLinkedinDate, filterByQuery } from '../utils';
+import { parseApiDate, filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
 import ExperienceForm from '../components/ExperienceForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import Spinner from '../components/Spinner';
+import { useToast } from '../services/toasts';
+import PlusIcon from '../icons/PlusIcon';
+import PencilIcon from '../icons/PencilIcon';
+
+interface ExperienceBoxProps {
+	experience: Experience;
+}
+
+function ExperienceBox({ experience }: ExperienceBoxProps) {
+	return (
+		<Link className='card card-bordered border-base-300 card-compact hover:shadow-md cursor-pointer flex items-between group' to={experience.id}>
+			<div className='card-body flex-row items-center justify-between'>
+				<div>
+					<div className='flex items-center gap-3'>
+						<div className='card-title'>
+							{ experience.company }
+						</div>
+						<h6>{ experience.title }</h6>
+					</div>
+					<div className='flex items-center gap-3'>
+						<div className='flex items-center'>
+							{ parseApiDate(
+								experience.startsAtDay,
+								experience.startsAtMonth,
+								experience.startsAtYear,
+							) }
+							{ ' - ' }
+							{ parseApiDate(
+								experience.endsAtDay,
+								experience.endsAtMonth,
+								experience.endsAtYear,
+							) || 'Now' }
+						</div>
+						{ experience.description }
+					</div>
+				</div>
+				<div className='hidden group-hover:block'>
+					<PencilIcon />
+				</div>
+			</div>
+		</Link>
+	);
+}
 
 interface ExperienceRouteProps {
 	path: string;
 }
 
 function CreateExperienceRoute({ path }: ExperienceRouteProps) {
+	const { addToast } = useToast();
 	const navigate = useNavigate();
-	const queryClient = useQueryClient();
 	const { pathname: experiencesPath } = useResolvedPath('');
 	const { pathname: createExperiencePath } = useResolvedPath(path);
 	const isCreateExperiencePath = !!useMatch(createExperiencePath);
-
-	const refetchExperiences = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ['experiences'] });
-	}, [queryClient]);
-
-	const refetchCounts = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ['userCounts'] });
-	}, [queryClient]);
 
 	return (
 		<Modal show={isCreateExperiencePath} onClose={() => navigate(experiencesPath)}>
@@ -42,9 +77,8 @@ function CreateExperienceRoute({ path }: ExperienceRouteProps) {
 			<ExperienceForm
 				experience={null}
 				onSave={() => {
+					addToast({ message: 'Experience created successfully', type: 'success' });
 					navigate(experiencesPath);
-					refetchExperiences();
-					refetchCounts();
 				}}
 				onCancel={() => navigate(experiencesPath)}
 			/>
@@ -53,8 +87,8 @@ function CreateExperienceRoute({ path }: ExperienceRouteProps) {
 }
 
 function UpdateExperienceRoute({ path }: ExperienceRouteProps) {
+	const { addToast } = useToast();
 	const navigate = useNavigate();
-	const queryClient = useQueryClient();
 	const { pathname: experiencesPath } = useResolvedPath('');
 	const { pathname: updateExperiencePath } = useResolvedPath(path);
 	const { '*': relativePath } = useParams();
@@ -63,66 +97,52 @@ function UpdateExperienceRoute({ path }: ExperienceRouteProps) {
 
 	const { data: experience, isLoading } = useQuery({
 		queryKey: ['experience', experienceId],
-		queryFn: async () => {
-			if (!isUpdateExperiencePath) {
-				return null;
-			}
-
-			const experienceRes = await axios.get<Experience>(`/api/experiences/${experienceId}`, { withCredentials: true });
-			return experienceRes.data;
-		},
+		queryFn: () => (
+			isUpdateExperiencePath && experienceId ? api.getExperience(experienceId) : null
+		),
 	});
-
-	const refetchExperiences = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ['experiences'] });
-	}, [queryClient]);
-
-	const refetchCounts = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ['userCounts'] });
-	}, [queryClient]);
 
 	return (
 		<Modal show={isUpdateExperiencePath} onClose={() => navigate(experiencesPath)}>
 			<div className='prose mb-6'>
 				<h3>Update Experience</h3>
 			</div>
-			{ isLoading
-				? (
-					<div className='w-full h-60'>
-						<Spinner />
-					</div>
-				)
-				: (
-					<ExperienceForm
-						experience={experience}
-						onSave={() => {
-							navigate(experiencesPath);
-							refetchExperiences();
-							refetchCounts();
-						}}
-						onDelete={() => {
-							navigate(experiencesPath);
-							refetchExperiences();
-							refetchCounts();
-						}}
-						onCancel={() => navigate(experiencesPath)}
-					/>
-				)}
+			<AnimateHeight
+				duration={300}
+				height={isLoading ? 400 : 'auto'}
+				className='h-full'
+			>
+				{ isLoading
+					? (
+						<div style={{ height: 400 }}>
+							<Spinner />
+						</div>
+					)
+					: (
+						<ExperienceForm
+							experience={experience}
+							onSave={() => {
+								addToast({ message: 'Experience updated successfully', type: 'success' });
+								navigate(experiencesPath);
+							}}
+							onDelete={() => {
+								addToast({ message: 'Experience deleted successfully', type: 'info' });
+								navigate(experiencesPath);
+							}}
+							onCancel={() => navigate(experiencesPath)}
+						/>
+					)}
+			</AnimateHeight>
 		</Modal>
 	);
 }
 
 export default function Experiences() {
 	const navigate = useNavigate();
-
 	const [search, setSearch] = useState('');
-
 	const { data: experiences, isLoading } = useQuery({
 		queryKey: ['experiences'],
-		queryFn: async () => {
-			const experiencesRes = await axios.get<Experience[]>('/api/experiences', { withCredentials: true });
-			return experiencesRes.data;
-		},
+		queryFn: api.getExperiences,
 	});
 
 	const filteredExperiences = useMemo(
@@ -145,9 +165,7 @@ export default function Experiences() {
 							<div className='flex justify-between'>
 								<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
 								<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
-									<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
-										<path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-									</svg>
+									<PlusIcon />
 									Add Experience
 								</Button>
 							</div>
@@ -158,39 +176,7 @@ export default function Experiences() {
 							)}
 							<div className='space-y-3'>
 								{ filteredExperiences.map((experience) => (
-									<Link className='card card-bordered border-base-300 card-compact hover:shadow-md cursor-pointer flex items-between group' to={experience.id}>
-										<div className='card-body flex-row items-center justify-between'>
-											<div>
-												<div className='flex items-center gap-3'>
-													<div className='card-title'>
-														{ experience.company }
-													</div>
-													<h6>{ experience.title }</h6>
-												</div>
-												<div className='flex items-center gap-3'>
-													<div className='flex items-center'>
-														{ parseLinkedinDate(
-															experience.startsAtDay,
-															experience.startsAtMonth,
-															experience.startsAtYear,
-														) }
-														{ ' - ' }
-														{ parseLinkedinDate(
-															experience.endsAtDay,
-															experience.endsAtMonth,
-															experience.endsAtYear,
-														) || 'Now' }
-													</div>
-													{ experience.description }
-												</div>
-											</div>
-											<div className='hidden group-hover:block'>
-												<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
-													<path strokeLinecap='round' strokeLinejoin='round' d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125' />
-												</svg>
-											</div>
-										</div>
-									</Link>
+									<ExperienceBox experience={experience} />
 								)) }
 							</div>
 						</div>

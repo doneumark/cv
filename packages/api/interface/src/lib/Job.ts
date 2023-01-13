@@ -1,1 +1,1 @@
-export {Job } from '@prisma/client';
+export { Job } from '@prisma/client';

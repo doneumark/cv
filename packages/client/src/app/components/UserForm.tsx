@@ -1,23 +1,23 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { User } from '@cv/api/interface';
-import axios from 'axios';
 import { useQueryClient } from 'react-query';
+import * as api from '../services/api';
 
 import Button from './Button';
 import Input from './Input';
 
-const syncLinkedinToServer = async () => {
-	try {
-		await axios.post('/api/user/linkedin');
-	} catch (err) {
-		if (axios.isAxiosError(err) && err.response) {
-			throw err.response.data;
-		}
+// const syncLinkedinToServer = async () => {
+// 	try {
+// 		await axios.post('/api/user/linkedin');
+// 	} catch (err) {
+// 		if (axios.isAxiosError(err) && err.response) {
+// 			throw err.response.data;
+// 		}
 
-		throw err;
-	}
-};
+// 		throw err;
+// 	}
+// };
 
 interface UserFormProps {
 	user: User,
@@ -32,7 +32,6 @@ export default function UserForm({ user }: UserFormProps) {
 		register,
 		handleSubmit,
 		formState: { errors, isDirty, isSubmitting },
-		setError,
 		reset,
 	} = useForm({
 		defaultValues: user,
@@ -44,26 +43,16 @@ export default function UserForm({ user }: UserFormProps) {
 
 	const updateUser = handleSubmit(async (data) => {
 		try {
-			await axios.put('/api/user', data, { withCredentials: true });
+			await api.updateUser(data);
 			reset(data);
 		} catch (err) {
-			if (axios.isAxiosError(err)) {
-				setError('linkedinUsername', { message: String(err.response?.data) });
-				return;
-			}
-
-			if (err instanceof Error) {
-				setError('linkedinUsername', { message: err.message });
-				return;
-			}
-
-			setError('linkedinUsername', { message: 'Unknown error' });
+			alert(err);
 		}
 	});
 
 	const syncLinkedin = useCallback(async () => {
 		setIsSyncingLinkedin(true);
-		await syncLinkedinToServer();
+		// await syncLinkedinToServer();
 		await queryClient.invalidateQueries({ queryKey: ['userCounts'] });
 		setIsSyncingLinkedin(false);
 	}, [queryClient]);

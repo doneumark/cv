@@ -1,38 +1,73 @@
-import { useState, useMemo, useCallback } from 'react';
-import { Project } from '@cv/api/interface';
+import { useState, useMemo } from 'react';
 import {
 	useMatch, useResolvedPath, useNavigate, Link, useParams,
 } from 'react-router-dom';
-import axios from 'axios';
-import { useQuery, useQueryClient } from 'react-query';
-import Table from '../components/Table';
+import { useQuery } from 'react-query';
+import AnimateHeight from 'react-animate-height';
+import { Project } from '@cv/api/interface';
+import * as api from '../services/api';
 import Button from '../components/Button';
-import { parseLinkedinDate, filterByQuery } from '../utils';
+import { parseApiDate, filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
 import ProjectForm from '../components/ProjectForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import Spinner from '../components/Spinner';
+import PlusIcon from '../icons/PlusIcon';
+import PencilIcon from '../icons/PencilIcon';
+import { useToast } from '../services/toasts';
+
+interface ProjectBoxProps {
+	project: Project;
+}
+
+function ProjectBox({ project }: ProjectBoxProps) {
+	return (
+		<Link className='card card-bordered border-base-300 card-compact hover:shadow-md cursor-pointer flex items-between group' to={project.id}>
+			<div className='card-body flex-row items-center justify-between'>
+				<div>
+					<div className='flex items-center gap-3'>
+						<div className='card-title'>
+							{ project.title }
+						</div>
+					</div>
+					<div className='flex items-center gap-3'>
+						<div className='flex items-center'>
+							{ parseApiDate(
+								project.startsAtDay,
+								project.startsAtMonth,
+								project.startsAtYear,
+							) }
+							{ ' - ' }
+							{ parseApiDate(
+								project.endsAtDay,
+								project.endsAtMonth,
+								project.endsAtYear,
+							) || 'Now' }
+						</div>
+						{ project.description }
+					</div>
+				</div>
+				<div className='hidden group-hover:block'>
+					<PencilIcon />
+				</div>
+			</div>
+		</Link>
+	);
+}
 
 interface ProjectRouteProps {
 	path: string;
 }
 
 function CreateProjectRoute({ path }: ProjectRouteProps) {
+	const { addToast } = useToast();
 	const navigate = useNavigate();
-	const queryClient = useQueryClient();
+
 	const { pathname: projectsPath } = useResolvedPath('');
 	const { pathname: createProjectPath } = useResolvedPath(path);
 	const isCreateProjectPath = !!useMatch(createProjectPath);
-
-	const refetchProjects = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ['projects'] });
-	}, [queryClient]);
-
-	const refetchCounts = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ['userCounts'] });
-	}, [queryClient]);
 
 	return (
 		<Modal show={isCreateProjectPath} onClose={() => navigate(projectsPath)}>
@@ -42,9 +77,8 @@ function CreateProjectRoute({ path }: ProjectRouteProps) {
 			<ProjectForm
 				project={null}
 				onSave={() => {
+					addToast({ message: 'Project created successfully', type: 'success' });
 					navigate(projectsPath);
-					refetchProjects();
-					refetchCounts();
 				}}
 				onCancel={() => navigate(projectsPath)}
 			/>
@@ -53,8 +87,8 @@ function CreateProjectRoute({ path }: ProjectRouteProps) {
 }
 
 function UpdateProjectRoute({ path }: ProjectRouteProps) {
+	const { addToast } = useToast();
 	const navigate = useNavigate();
-	const queryClient = useQueryClient();
 	const { pathname: projectsPath } = useResolvedPath('');
 	const { pathname: updateProjectPath } = useResolvedPath(path);
 	const { '*': relativePath } = useParams();
@@ -63,66 +97,52 @@ function UpdateProjectRoute({ path }: ProjectRouteProps) {
 
 	const { data: project, isLoading } = useQuery({
 		queryKey: ['project', projectId],
-		queryFn: async () => {
-			if (!isUpdateProjectPath) {
-				return null;
-			}
-
-			const projectRes = await axios.get<Project>(`/api/projects/${projectId}`, { withCredentials: true });
-			return projectRes.data;
-		},
+		queryFn: () => (
+			isUpdateProjectPath && projectId ? api.getProject(projectId) : null
+		),
 	});
-
-	const refetchProjects = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ['projects'] });
-	}, [queryClient]);
-
-	const refetchCounts = useCallback(() => {
-		queryClient.invalidateQueries({ queryKey: ['userCounts'] });
-	}, [queryClient]);
 
 	return (
 		<Modal show={isUpdateProjectPath} onClose={() => navigate(projectsPath)}>
 			<div className='prose mb-6'>
 				<h3>Update Project</h3>
 			</div>
-			{ isLoading
-				? (
-					<div className='w-full h-60'>
-						<Spinner />
-					</div>
-				)
-				: (
-					<ProjectForm
-						project={project}
-						onSave={() => {
-							navigate(projectsPath);
-							refetchProjects();
-							refetchCounts();
-						}}
-						onDelete={() => {
-							navigate(projectsPath);
-							refetchProjects();
-							refetchCounts();
-						}}
-						onCancel={() => navigate(projectsPath)}
-					/>
-				) }
+			<AnimateHeight
+				duration={300}
+				height={isLoading ? 400 : 'auto'}
+				className='h-full'
+			>
+				{ isLoading
+					? (
+						<div className='w-full h-60'>
+							<Spinner />
+						</div>
+					)
+					: (
+						<ProjectForm
+							project={project}
+							onSave={() => {
+								addToast({ message: 'Project updated successfully', type: 'success' });
+								navigate(projectsPath);
+							}}
+							onDelete={() => {
+								addToast({ message: 'Project deleted successfully', type: 'info' });
+								navigate(projectsPath);
+							}}
+							onCancel={() => navigate(projectsPath)}
+						/>
+					) }
+			</AnimateHeight>
 		</Modal>
 	);
 }
 
 export default function Projects() {
 	const navigate = useNavigate();
-
 	const [search, setSearch] = useState('');
-
 	const { data: projects, isLoading } = useQuery({
 		queryKey: ['projects'],
-		queryFn: async () => {
-			const projectsRes = await axios.get<Project[]>('/api/projects', { withCredentials: true });
-			return projectsRes.data;
-		},
+		queryFn: api.getProjects,
 	});
 
 	const filteredProjects = useMemo(
@@ -145,57 +165,20 @@ export default function Projects() {
 							<div className='flex justify-between'>
 								<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
 								<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
-									<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
-										<path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-									</svg>
+									<PlusIcon />
 									Add Project
 								</Button>
 							</div>
-							<Table>
-								<thead>
-									<tr>
-										<th>From</th>
-										<th>To</th>
-										<th>Title</th>
-										<th>Description</th>
-									</tr>
-								</thead>
-								<tbody>
-									{ !filteredProjects.length && (
-										<tr>
-											<td colSpan={4} className='text-center'>
-												No projects found
-											</td>
-										</tr>
-									)}
-									{ filteredProjects.map((project) => (
-										<tr key={project.id}>
-											<td>
-												<Link to={project.id}>
-													{ parseLinkedinDate(
-														project.startsAtDay,
-														project.startsAtMonth,
-														project.startsAtYear,
-													) }
-												</Link>
-											</td>
-											<td>
-												{ parseLinkedinDate(
-													project.endsAtDay,
-													project.endsAtMonth,
-													project.endsAtYear,
-												) }
-											</td>
-											<td>
-												<Link to={project.id}>
-													{ project.title }
-												</Link>
-											</td>
-											<td>{ project.description }</td>
-										</tr>
-									)) }
-								</tbody>
-							</Table>
+							{ !filteredProjects.length && (
+								<div className='text-center'>
+									No projects found
+								</div>
+							)}
+							<div className='space-y-3'>
+								{ filteredProjects.map((project) => (
+									<ProjectBox project={project} />
+								)) }
+							</div>
 						</div>
 					)}
 			</PageContent>

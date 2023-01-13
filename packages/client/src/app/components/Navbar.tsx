@@ -21,7 +21,7 @@ export default function Navbar() {
 					{ user && (
 						<div className='dropdown dropdown-hover dropdown-end'>
 							<div className='flex items-center gap-2 from-stone-500'>
-								<div className='cursor-pointer'>{ user.fullName }</div>
+								<div className='cursor-pointer text-sm'>{ user.fullName }</div>
 								<label tabIndex={0} className='btn btn-ghost btn-circle avatar'>
 									<div className='w-10 rounded-full'>
 										<img alt={user.fullName} src='https://placeimg.com/80/80/people' />

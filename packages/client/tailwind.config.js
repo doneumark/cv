@@ -8,6 +8,7 @@ module.exports = {
       "{src,pages,components}/**/*!(*.stories|*.spec).{ts,tsx,html}"
     ),
     ...createGlobPatternsForDependencies(__dirname),
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
   ],
   theme: {
     extend: {},
@@ -16,4 +17,5 @@ module.exports = {
   daisyui: {
     themes: ["lofi"],
   },
+  darkMode: "class",
 };

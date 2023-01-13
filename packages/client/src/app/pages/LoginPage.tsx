@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import * as api from '../services/api';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import UserState from '../state/UserState';
@@ -15,7 +15,6 @@ export default function LoginPage() {
 		register,
 		handleSubmit,
 		formState: { errors },
-		setError,
 	} = useForm({
 		defaultValues: {
 			email: '',
@@ -29,20 +28,10 @@ export default function LoginPage() {
 
 	const login = handleSubmit(async (data) => {
 		try {
-			const userRes = await axios.post('/api/login', data, { withCredentials: true });
-			setUser(userRes.data);
+			const loggedInUser = await api.login(data);
+			setUser(loggedInUser);
 		} catch (err) {
-			if (axios.isAxiosError(err)) {
-				setError('email', { message: String(err.response?.data) });
-				return;
-			}
-
-			if (err instanceof Error) {
-				setError('email', { message: err.message });
-				return;
-			}
-
-			setError('email', { message: 'Unknown error' });
+			alert(err);
 		}
 	});
 

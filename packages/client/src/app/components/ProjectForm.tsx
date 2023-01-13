@@ -1,8 +1,12 @@
 import { Project } from '@cv/api/interface';
 import { useForm } from 'react-hook-form';
-import axios, { AxiosResponse } from 'axios';
+import { useQueryClient } from 'react-query';
+import OutlineSaveIcon from '../icons/OutlineSaveIcon';
+import * as api from '../services/api';
 import Button from './Button';
 import Input from './Input';
+import Label from './Label';
+import StartsAtEndsAtInput from './StartsAtEndsAtInput';
 
 export interface ProjectFormProps {
 	project?: Project | null;
@@ -19,21 +23,25 @@ export default function ProjectForm({
 		handleSubmit,
 		formState: { isDirty },
 		reset,
+		control,
 	} = useForm({
 		defaultValues: project || {},
 	});
+	const queryClient = useQueryClient();
 
 	const save = handleSubmit(async (data) => {
 		try {
-			let axiosRes: AxiosResponse<Project>;
+			let savedProject: Project;
 			if (!project) {
-				axiosRes = await axios.post<Project>('/api/projects', data, { withCredentials: true });
+				savedProject = await api.createProject(data);
+				queryClient.invalidateQueries(['projects', 'userCounts']);
 			} else {
-				axiosRes = await axios.put<Project>(`/api/projects/${project.id}`, data, { withCredentials: true });
+				savedProject = await api.updateProject(project.id, data);
+				queryClient.invalidateQueries('projects');
 			}
 
 			if (onSave) {
-				onSave(axiosRes.data);
+				onSave(savedProject);
 			}
 
 			reset(data);
@@ -48,7 +56,7 @@ export default function ProjectForm({
 		}
 
 		try {
-			await axios.delete<Project>(`/api/projects/${project.id}`, { withCredentials: true });
+			await api.deleteProject(project.id);
 			if (onDelete) {
 				onDelete(project);
 			}
@@ -62,45 +70,12 @@ export default function ProjectForm({
 	return (
 		<form onSubmit={save} className='space-y-6'>
 			<div className='form-control'>
-				<label className='label pt-0 pb-2'>
-					<span className='label-text'>Title</span>
-				</label>
+				<Label text='Title' />
 				<Input type='text' placeholder='Project Title' {...register('title')} />
 			</div>
-			<div className='grid grid-cols-6 gap-6'>
-				<div className='col-span-6 sm:col-span-3'>
-					<div className='form-control'>
-						<label className='label'>
-							<span className='label-text'>Enter amount</span>
-						</label>
-						<label className='input-group'>
-							<input type='number' min='1' max='31' placeholder='00' className='input input-bordered block w-20' />
-							<span>/</span>
-							<input type='number' min='1' max='12' placeholder='00' className='input input-bordered block w-20' />
-							<span>/</span>
-							<input type='number' min='1900' max='2030' placeholder='0000' className='input input-bordered block w-32' />
-						</label>
-					</div>
-				</div>
-				<div className='col-span-6 sm:col-span-3'>
-					<div className='form-control'>
-						<label className='label'>
-							<span className='label-text'>Enter amount</span>
-						</label>
-						<label className='input-group'>
-							<input type='number' placeholder='--' className='input input-bordered block w-16' />
-							<span>/</span>
-							<input type='number' placeholder='--' className='input input-bordered block w-16' />
-							<span>/</span>
-							<input type='number' placeholder='----' className='input input-bordered block w-32' />
-						</label>
-					</div>
-				</div>
-			</div>
+			<StartsAtEndsAtInput control={control} />
 			<div className='form-control'>
-				<label className='label pt-0 pb-2'>
-					<span className='label-text'>Description</span>
-				</label>
+				<Label text='Description' />
 				<textarea
 					className='textarea textarea-bordered block'
 					rows={2}
@@ -117,9 +92,7 @@ export default function ProjectForm({
 						Cancel
 					</Button>
 					<Button className='gap-2' color='secondary' type='submit' disabled={!isDirty}>
-						<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
-							<path strokeLinecap='round' strokeLinejoin='round' d='M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9' />
-						</svg>
+						<OutlineSaveIcon />
 						Save
 					</Button>
 				</div>

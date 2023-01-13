@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Profile } from '@cv/api/interface';
-import axios from 'axios';
+import * as api from '../services/api';
 
 import Button from './Button';
 import Input from './Input';
@@ -28,13 +28,13 @@ export default function ProfileForm({ profile }: ProfileFormProps) {
 		reset(profile);
 	}, [profile, reset]);
 
-	const updateProfile = handleSubmit(async (data) => {
-		await axios.put('/api/profile', data, { withCredentials: true });
+	const updateProfile = async (data: Profile) => {
+		await api.updateProfile(data);
 		reset(data);
-	});
+	};
 
 	return (
-		<form onSubmit={updateProfile} className='space-y-6'>
+		<form onSubmit={handleSubmit(updateProfile)} className='space-y-6'>
 			<div className='grid grid-cols-6 gap-6'>
 				<div className='form-control col-span-6 sm:col-span-3'>
 					<label className='label pt-0 pb-2'>
