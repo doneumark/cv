@@ -1,6 +1,6 @@
 import { VolunteerWork } from '@cv/api/interface';
 import { useForm } from 'react-hook-form';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import * as api from '../services/api';
 import Button from './Button';
@@ -34,12 +34,12 @@ export default function VolunteerWorkForm({ volunteerWork, onClose }: VolunteerF
 		try {
 			if (!volunteerWork) {
 				await api.createVolunteerWork(data);
-				queryClient.invalidateQueries(['volunteer-work']);
+				queryClient.invalidateQueries(['volunteer-works']);
 				queryClient.invalidateQueries(['userCounts']);
 				addToast({ message: 'Volunteer created successfully', type: 'success' });
 			} else {
 				await api.updateVolunteerWork(volunteerWork.id, data);
-				queryClient.invalidateQueries(['volunteer-work']);
+				queryClient.invalidateQueries(['volunteer-works']);
 				addToast({ message: 'Volunteer updated successfully', type: 'success' });
 			}
 
@@ -62,7 +62,7 @@ export default function VolunteerWorkForm({ volunteerWork, onClose }: VolunteerF
 
 		try {
 			await api.deleteVolunteerWork(volunteerWork.id);
-			queryClient.invalidateQueries(['volunteer-work']);
+			queryClient.invalidateQueries(['volunteer-works']);
 			queryClient.invalidateQueries(['userCounts']);
 			addToast({ message: 'Volunteer deleted successfully', type: 'success' });
 

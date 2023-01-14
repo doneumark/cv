@@ -16,6 +16,7 @@ import SignupPage from '../pages/SignupPage';
 import LogoutPage from '../pages/LogoutPage';
 import UserState from '../state/UserState';
 import SyncPage from '../pages/SyncPage';
+import GenerateCvPage from '../pages/GenerateCvPage';
 
 export interface ProtectedRoutesProps {
 	children: React.ReactElement
@@ -50,7 +51,7 @@ export default function Router() {
 				path='/generate-cv/*'
 				element={(
 					<ProtectedRoute>
-						<div>GenerateCvPage</div>
+						<GenerateCvPage />
 					</ProtectedRoute>
 				)}
 			/>

@@ -1,58 +1,19 @@
 import { useState, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
-import { Project } from '@cv/api/interface';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import * as api from '../services/api';
 import Button from '../components/Button';
-import { parseApiDate, filterByQuery } from '../services/misc';
+import { filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
 import ProjectForm from '../components/ProjectForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import PlusIcon from '../icons/PlusIcon';
-import PencilIcon from '../icons/PencilIcon';
 import LoadingContainer from '../components/LoadingContainer';
 import { useFormRoute } from '../services/routes';
-
-interface ProjectBoxProps {
-	project: Project;
-}
-
-function ProjectBox({ project }: ProjectBoxProps) {
-	return (
-		<Link className='card card-bordered border-base-300 card-compact hover:shadow-md cursor-pointer flex items-between group' to={project.id}>
-			<div className='card-body flex-row items-center justify-between'>
-				<div>
-					<div className='flex items-center gap-3'>
-						<div className='card-title'>
-							{ project.title }
-						</div>
-					</div>
-					<div className='flex items-center gap-3'>
-						<div className='flex items-center'>
-							{ parseApiDate(
-								project.startsAtDay,
-								project.startsAtMonth,
-								project.startsAtYear,
-							) }
-							{ ' - ' }
-							{ parseApiDate(
-								project.endsAtDay,
-								project.endsAtMonth,
-								project.endsAtYear,
-							) || 'Now' }
-						</div>
-						{ `${project.description}` }
-					</div>
-				</div>
-				<div className='hidden group-hover:block'>
-					<PencilIcon />
-				</div>
-			</div>
-		</Link>
-	);
-}
+import BoxLink from '../components/BoxLinkContainer';
+import ProjectBox from '../components/ProjectBox';
 
 function CreateProjectModal() {
 	const { isCreatePath, rootPath: projectsPath } = useFormRoute();
@@ -72,7 +33,7 @@ function UpdateProjectModal() {
 	const { isUpdatePath, pathParam: projectId, rootPath: projectsPath } = useFormRoute();
 	const navigate = useNavigate();
 
-	const { data: project, isLoading } = useQuery({
+	const { data: project, isInitialLoading } = useQuery({
 		queryKey: ['project', projectId],
 		queryFn: () => (projectId ? api.getProject(projectId) : null),
 		enabled: isUpdatePath,
@@ -84,7 +45,7 @@ function UpdateProjectModal() {
 			<div className='prose mb-6'>
 				<h3>Update Project</h3>
 			</div>
-			<LoadingContainer height={400} isLoading={isLoading}>
+			<LoadingContainer height={400} isLoading={isInitialLoading}>
 				<ProjectForm
 					project={project || undefined}
 					onClose={() => navigate(projectsPath)}
@@ -97,7 +58,7 @@ function UpdateProjectModal() {
 export default function Projects() {
 	const navigate = useNavigate();
 	const [search, setSearch] = useState('');
-	const { data: projects, isLoading } = useQuery({
+	const { data: projects, isInitialLoading } = useQuery({
 		queryKey: ['projects'],
 		queryFn: api.getProjects,
 	});
@@ -111,7 +72,7 @@ export default function Projects() {
 		<>
 			<PageTitle title='Projects' />
 			<PageContent>
-				<LoadingContainer height={200} isLoading={isLoading}>
+				<LoadingContainer height={200} isLoading={isInitialLoading}>
 					<div className='space-y-6'>
 						<div className='flex justify-between'>
 							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -123,7 +84,9 @@ export default function Projects() {
 
 						<div className='space-y-3'>
 							{ filteredProjects.map((project) => (
-								<ProjectBox project={project} key={`project-box-${project.id}`} />
+								<BoxLink to={project.id} key={`project-box-${project.id}`}>
+									<ProjectBox extended project={project} />
+								</BoxLink>
 							)) }
 							{ !filteredProjects.length && (
 								<div className='text-center'>

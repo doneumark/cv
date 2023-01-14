@@ -1,6 +1,6 @@
 import { Experience } from '@cv/api/interface';
 import { useForm } from 'react-hook-form';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import * as api from '../services/api';
 import Button from './Button';

@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { User } from '@cv/api/interface';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
@@ -79,7 +79,7 @@ function SyncLinkedinForm({ user }: SyncLinkedinFormProps) {
 
 export default function SyncPage() {
 	const {
-		data: user, isLoading,
+		data: user, isInitialLoading,
 	} = useQuery<User>({
 		queryKey: ['user'],
 		queryFn: api.getUser,
@@ -91,7 +91,7 @@ export default function SyncPage() {
 		<>
 			<PageTitle title='Sync' />
 			<PageContent>
-				<LoadingContainer height={200} isLoading={isLoading}>
+				<LoadingContainer height={200} isLoading={isInitialLoading}>
 					<SyncLinkedinForm user={user} />
 				</LoadingContainer>
 			</PageContent>

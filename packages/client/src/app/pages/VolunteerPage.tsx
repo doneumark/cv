@@ -1,59 +1,19 @@
 import { useState, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
-import { VolunteerWork } from '@cv/api/interface';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import * as api from '../services/api';
 import Button from '../components/Button';
-import { parseApiDate, filterByQuery } from '../services/misc';
+import { filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
 import VolunteerWorkForm from '../components/VolunteerWorkForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import PlusIcon from '../icons/PlusIcon';
-import PencilIcon from '../icons/PencilIcon';
 import LoadingContainer from '../components/LoadingContainer';
 import { useFormRoute } from '../services/routes';
-
-interface VolunteerBoxProps {
-	volunteerWork: VolunteerWork;
-}
-
-function VolunteerBox({ volunteerWork }: VolunteerBoxProps) {
-	return (
-		<Link className='card card-bordered border-base-300 card-compact hover:shadow-md cursor-pointer flex items-between group' to={volunteerWork.id}>
-			<div className='card-body flex-row items-center justify-between'>
-				<div>
-					<div className='flex items-center gap-3'>
-						<div className='card-title'>
-							{ volunteerWork.company }
-						</div>
-						<h6>{ `${volunteerWork.title}${volunteerWork.cause ? `, ${volunteerWork.cause}` : ''}`}</h6>
-					</div>
-					<div className='flex items-center gap-3'>
-						<div className='flex items-center'>
-							{ parseApiDate(
-								volunteerWork.startsAtDay,
-								volunteerWork.startsAtMonth,
-								volunteerWork.startsAtYear,
-							) }
-							{ ' - ' }
-							{ parseApiDate(
-								volunteerWork.endsAtDay,
-								volunteerWork.endsAtMonth,
-								volunteerWork.endsAtYear,
-							) || 'Now' }
-						</div>
-						{ volunteerWork.description }
-					</div>
-				</div>
-				<div className='hidden group-hover:block'>
-					<PencilIcon />
-				</div>
-			</div>
-		</Link>
-	);
-}
+import BoxLink from '../components/BoxLinkContainer';
+import VolunteerWorkBox from '../components/VolunteerWorkBox';
 
 function CreateVolunteerModal() {
 	const { isCreatePath, rootPath: volunteersPath } = useFormRoute();
@@ -73,7 +33,7 @@ function UpdateVolunteerModal() {
 	const { isUpdatePath, pathParam: volunteerWorkId, rootPath: volunteersPath } = useFormRoute();
 	const navigate = useNavigate();
 
-	const { data: volunteerWork, isLoading } = useQuery({
+	const { data: volunteerWork, isInitialLoading } = useQuery({
 		queryKey: ['volunteer-work', volunteerWorkId],
 		queryFn: () => (volunteerWorkId ? api.getVolunteerWork(volunteerWorkId) : null),
 		enabled: isUpdatePath,
@@ -85,7 +45,7 @@ function UpdateVolunteerModal() {
 			<div className='prose mb-6'>
 				<h3>Update Volunteer</h3>
 			</div>
-			<LoadingContainer height={400} isLoading={isLoading}>
+			<LoadingContainer height={400} isLoading={isInitialLoading}>
 				<VolunteerWorkForm
 					volunteerWork={volunteerWork || undefined}
 					onClose={() => navigate(volunteersPath)}
@@ -98,8 +58,8 @@ function UpdateVolunteerModal() {
 export default function Volunteers() {
 	const navigate = useNavigate();
 	const [search, setSearch] = useState('');
-	const { data: volunteerWorks, isLoading } = useQuery({
-		queryKey: ['volunteer-work'],
+	const { data: volunteerWorks, isInitialLoading } = useQuery({
+		queryKey: ['volunteer-works'],
 		queryFn: api.getVolunteerWorks,
 	});
 
@@ -112,7 +72,7 @@ export default function Volunteers() {
 		<>
 			<PageTitle title='Volunteers' />
 			<PageContent>
-				<LoadingContainer height={200} isLoading={isLoading}>
+				<LoadingContainer height={200} isLoading={isInitialLoading}>
 					<div className='space-y-6'>
 						<div className='flex justify-between'>
 							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -122,8 +82,10 @@ export default function Volunteers() {
 							</Button>
 						</div>
 						<div className='space-y-3'>
-							{ filteredVolunteerWorks.map((filteredVolunteerWork) => (
-								<VolunteerBox volunteerWork={filteredVolunteerWork} key={`volunteer-box-${filteredVolunteerWork.id}`} />
+							{ filteredVolunteerWorks.map((volunteerWork) => (
+								<BoxLink to={volunteerWork.id} key={`volunteer-box-${volunteerWork.id}`}>
+									<VolunteerWorkBox extended volunteerWork={volunteerWork} />
+								</BoxLink>
 							)) }
 							{ !filteredVolunteerWorks.length && (
 								<div className='text-center'>

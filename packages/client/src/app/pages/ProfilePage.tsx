@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Profile } from '@cv/api/interface';
 import * as api from '../services/api';
 import ProfileForm from '../components/ProfileForm';

@@ -1,5 +1,5 @@
 import { useRecoilState } from 'recoil';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 // import clsx from 'clsx';
 import UserState from './state/UserState';
@@ -21,8 +21,8 @@ export function App() {
 	const [, setUser] = useRecoilState(UserState);
 	const [, setUserCounts] = useRecoilState(UserCountsState);
 
-	const { isLoading: isLoadingAuth } = useQuery({
-		queryKey: 'me',
+	const { isInitialLoading: isLoadingAuth } = useQuery({
+		queryKey: ['me'],
 		queryFn: async () => {
 			try {
 				const user = await api.auth();
@@ -36,7 +36,7 @@ export function App() {
 	});
 
 	useQuery({
-		queryKey: 'userCounts',
+		queryKey: ['userCounts'],
 		queryFn: async () => {
 			const userCounts = await api.getUserCounts();
 			setUserCounts(userCounts);
