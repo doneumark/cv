@@ -6,14 +6,14 @@ import Button from '../components/Button';
 import { filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
-import VolunteerWorkForm from '../components/VolunteerWorkForm';
+import VolunteerWorkForm from '../components/volunteer-work/VolunteerWorkForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import PlusIcon from '../icons/PlusIcon';
 import LoadingContainer from '../components/LoadingContainer';
 import { useFormRoute } from '../services/routes';
 import BoxLink from '../components/BoxLinkContainer';
-import VolunteerWorkBox from '../components/VolunteerWorkBox';
+import VolunteerWorkBox from '../components/volunteer-work/VolunteerWorkBox';
 
 function CreateVolunteerWorkModal() {
 	const { isCreatePath, rootPath: volunteersPath } = useFormRoute();

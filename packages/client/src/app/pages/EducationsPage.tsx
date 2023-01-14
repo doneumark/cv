@@ -6,13 +6,13 @@ import Button from '../components/Button';
 import { filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
-import EducationForm from '../components/EducationForm';
+import EducationForm from '../components/education/EducationForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import PlusIcon from '../icons/PlusIcon';
 import LoadingContainer from '../components/LoadingContainer';
 import { useFormRoute } from '../services/routes';
-import EducationBox from '../components/EducationBox';
+import EducationBox from '../components/education/EducationBox';
 import BoxLink from '../components/BoxLinkContainer';
 
 function CreateEducationModal() {

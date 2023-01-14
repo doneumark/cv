@@ -1,5 +1,5 @@
 import { VolunteerWork } from '@cv/api/interface';
-import { parseApiDate } from '../services/misc';
+import { parseApiDate } from '../../services/misc';
 
 export interface VolunteerWorkBoxProps {
 	volunteerWork: VolunteerWork;

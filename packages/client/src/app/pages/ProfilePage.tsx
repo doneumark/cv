@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Profile } from '@cv/api/interface';
 import * as api from '../services/api';
-import ProfileForm from '../components/ProfileForm';
+import ProfileForm from '../components/profile/ProfileForm';
 import PageTitle from '../components/PageTitle';
 import PageContent from '../components/PageContent';
 import LoadingContainer from '../components/LoadingContainer';

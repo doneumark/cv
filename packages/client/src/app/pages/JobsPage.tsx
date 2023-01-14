@@ -6,14 +6,14 @@ import Button from '../components/Button';
 import { filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
-import JobForm from '../components/JobForm';
+import JobForm from '../components/job/JobForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import PlusIcon from '../icons/PlusIcon';
 import LoadingContainer from '../components/LoadingContainer';
 import { useFormRoute } from '../services/routes';
 import BoxLink from '../components/BoxLinkContainer';
-import JobBox from '../components/JobBox';
+import JobBox from '../components/job/JobBox';
 
 function CreateJobModal() {
 	const { isCreatePath, rootPath: jobsPath } = useFormRoute();

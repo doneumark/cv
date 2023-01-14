@@ -6,14 +6,14 @@ import Button from '../components/Button';
 import { filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
-import ExperienceForm from '../components/ExperienceForm';
+import ExperienceForm from '../components/experience/ExperienceForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import PlusIcon from '../icons/PlusIcon';
 import LoadingContainer from '../components/LoadingContainer';
 import { useFormRoute } from '../services/routes';
 import BoxLink from '../components/BoxLinkContainer';
-import ExperienceBox from '../components/ExperienceBox';
+import ExperienceBox from '../components/experience/ExperienceBox';
 
 function CreateExperienceModal() {
 	const { isCreatePath, rootPath: experiencesPath } = useFormRoute();

@@ -6,14 +6,14 @@ import Button from '../components/Button';
 import { filterByQuery } from '../services/misc';
 import SearchInput from '../components/SearchInput';
 import Modal from '../components/Modal';
-import ProjectForm from '../components/ProjectForm';
+import ProjectForm from '../components/project/ProjectForm';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import PlusIcon from '../icons/PlusIcon';
 import LoadingContainer from '../components/LoadingContainer';
 import { useFormRoute } from '../services/routes';
 import BoxLink from '../components/BoxLinkContainer';
-import ProjectBox from '../components/ProjectBox';
+import ProjectBox from '../components/project/ProjectBox';
 
 function CreateProjectModal() {
 	const { isCreatePath, rootPath: projectsPath } = useFormRoute();

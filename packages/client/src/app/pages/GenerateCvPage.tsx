@@ -3,11 +3,12 @@ import * as api from '../services/api';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import LoadingContainer from '../components/LoadingContainer';
-import ExperienceBox from '../components/ExperienceBox';
-import EducationBox from '../components/EducationBox';
-import ProjectBox from '../components/ProjectBox';
-import VolunteerWorkBox from '../components/VolunteerWorkBox';
-import JobBox from '../components/JobBox';
+import ExperienceBox from '../components/experience/ExperienceBox';
+import EducationBox from '../components/education/EducationBox';
+import ProjectBox from '../components/project/ProjectBox';
+import VolunteerWorkBox from '../components/volunteer-work/VolunteerWorkBox';
+import JobBox from '../components/job/JobBox';
+import Label from '../components/Label';
 
 export default function GenerateCvPage() {
 	const { data: profile, isInitialLoading: isLoadingProfile } = useQuery({
@@ -44,24 +45,23 @@ export default function GenerateCvPage() {
 		<>
 			<PageTitle title='Generate CV' />
 			<PageContent>
-				<div className='space-y-6'>
-					<div className='space-y-3'>
-						Profile
-						<div className='card card-bordered'>
+				<div className='space-y-3'>
+					<div>
+						<Label text='Profile' />
+						<div className='card card-bordered border-base-300 card-compact'>
 							<div className='card-body p-3'>
 								<LoadingContainer height={50} isLoading={isLoadingProfile}>
-									<div className='space-y-1.5 mt-1.5' />
 									{ profile?.headline || null }
 								</LoadingContainer>
 							</div>
 						</div>
 					</div>
-					<div className='space-y-3'>
-						Experiences
+					<div>
+						<Label text='Experiences' />
 						<LoadingContainer height={50} isLoading={isLoadingExperiences}>
 							<div className='space-y-1.5 mt-1.5'>
 								{ experiences?.map((experience) => (
-									<div className='card card-bordered' key={`experience-box-${experience.id}`}>
+									<div className='card card-bordered border-base-300 card-compact' key={`experience-box-${experience.id}`}>
 										<div className='card-body p-3'>
 											<ExperienceBox experience={experience} />
 										</div>
@@ -73,10 +73,9 @@ export default function GenerateCvPage() {
 							</div>
 						</LoadingContainer>
 					</div>
-
-					<div className='space-y-3'>
-						Educations
-						<div className='card card-bordered'>
+					<div>
+						<Label text='Educations' />
+						<div className='card card-bordered border-base-300 card-compact'>
 							<div className='card-body p-3'>
 								<LoadingContainer height={50} isLoading={isLoadingEducation}>
 									<div className='space-y-1.5 mt-1.5' />
@@ -90,9 +89,9 @@ export default function GenerateCvPage() {
 							</div>
 						</div>
 					</div>
-					<div className='space-y-3'>
-						Projects
-						<div className='card card-bordered'>
+					<div>
+						<Label text='Projects' />
+						<div className='card card-bordered border-base-300 card-compact'>
 							<div className='card-body p-3'>
 								<LoadingContainer height={50} isLoading={isLoadingProject}>
 									<div className='space-y-1.5 mt-1.5'>
@@ -107,8 +106,8 @@ export default function GenerateCvPage() {
 							</div>
 						</div>
 					</div>
-					<div className='space-y-3'>
-						Volunteer
+					<div>
+						<Label text='Volunteer' />
 						<LoadingContainer height={50} isLoading={isLoadingVolunteerWorks}>
 							<div className='space-y-1.5 mt-1.5'>
 								{ volunteerWorks?.map((volunteerWork) => (
@@ -124,8 +123,8 @@ export default function GenerateCvPage() {
 							</div>
 						</LoadingContainer>
 					</div>
-					<div className='space-y-3'>
-						Jobs
+					<div>
+						<Label text='Jobs' />
 						<LoadingContainer height={50} isLoading={isLoadingJobs}>
 							<div className='space-y-1.5 mt-1.5'>
 								{ jobs?.map((job) => (

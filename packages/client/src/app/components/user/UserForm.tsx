@@ -1,13 +1,13 @@
 import { useForm } from 'react-hook-form';
 import { User } from '@cv/api/interface';
 import { useEffect } from 'react';
-import * as api from '../services/api';
+import * as api from '../../services/api';
 
-import Button from './Button';
-import Input from './Input';
-import Label from './Label';
-import OutlineSaveIcon from '../icons/OutlineSaveIcon';
-import { useToast } from '../services/toasts';
+import Button from '../Button';
+import Input from '../Input';
+import Label from '../Label';
+import OutlineSaveIcon from '../../icons/OutlineSaveIcon';
+import { useToast } from '../../services/toasts';
 
 interface UserFormProps {
 	user?: User,

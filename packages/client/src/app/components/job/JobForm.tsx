@@ -2,12 +2,12 @@ import { Job } from '@cv/api/interface';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import * as api from '../services/api';
-import Button from './Button';
-import Input from './Input';
-import Label from './Label';
-import OutlineSaveIcon from '../icons/OutlineSaveIcon';
-import { useToast } from '../services/toasts';
+import * as api from '../../services/api';
+import Button from '../Button';
+import Input from '../Input';
+import Label from '../Label';
+import OutlineSaveIcon from '../../icons/OutlineSaveIcon';
+import { useToast } from '../../services/toasts';
 
 export interface JobFormProps {
 	job?: Job;
