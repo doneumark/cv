@@ -9,27 +9,35 @@ export interface ProjectBoxProps {
 export default function ProjectBox({ project, extended }: ProjectBoxProps) {
 	return (
 		<div>
-			<div className='flex items-center gap-3'>
-				<div className='card-title'>
-					{ project.title }
-				</div>
-			</div>
-			{ extended && (
-				<div className='flex items-center gap-3'>
-					<div className='flex items-center'>
-						{ parseApiDate(
-							project.startsAtDay,
-							project.startsAtMonth,
-							project.startsAtYear,
-						) }
-						{ ' - ' }
-						{ parseApiDate(
-							project.endsAtDay,
-							project.endsAtMonth,
-							project.endsAtYear,
-						) || 'Now' }
+			{ extended ? (
+				<>
+					<div className='flex items-center gap-3'>
+						<div className='card-title'>
+							{ project.title }
+						</div>
 					</div>
-					{ `${project.description}` }
+					<div className='flex items-center gap-3'>
+						<div className='flex items-center'>
+							{ parseApiDate(
+								project.startsAtDay,
+								project.startsAtMonth,
+								project.startsAtYear,
+							) }
+							{ ' - ' }
+							{ parseApiDate(
+								project.endsAtDay,
+								project.endsAtMonth,
+								project.endsAtYear,
+							) || 'Now' }
+						</div>
+						{ `${project.description}` }
+					</div>
+				</>
+			) : (
+				<div className='flex items-center gap-3'>
+					<div className='font-bold'>
+						{ project.title }
+					</div>
 				</div>
 			) }
 		</div>
