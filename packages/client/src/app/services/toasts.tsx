@@ -69,7 +69,7 @@ function ToastElement({ toast, style }: ToastElementInterface) {
 
 	useEffect(() => {
 		const toastTimeout = setTimeout(() => {
-			// removeToast(toast);
+			removeToast(toast);
 		}, 5000);
 
 		return () => {

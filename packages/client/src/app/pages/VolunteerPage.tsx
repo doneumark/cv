@@ -116,12 +116,11 @@ export default function Volunteers() {
 					<div className='space-y-6'>
 						<div className='flex justify-between'>
 							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
-							<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
+							<Button size='sm' color='primary' type='submit' onClick={() => navigate('new')}>
 								<PlusIcon />
 								Add Volunteer
 							</Button>
 						</div>
-
 						<div className='space-y-3'>
 							{ filteredVolunteerWorks.map((filteredVolunteerWork) => (
 								<VolunteerBox volunteerWork={filteredVolunteerWork} key={`volunteer-box-${filteredVolunteerWork.id}`} />
