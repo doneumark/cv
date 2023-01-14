@@ -64,7 +64,7 @@ export default function EducationForm({ education, onClose }: EducationFormProps
 			await api.deleteEducation(education.id);
 			queryClient.invalidateQueries(['educations']);
 			queryClient.invalidateQueries(['userCounts']);
-			addToast({ message: 'Education deleted successfully', type: 'info' });
+			addToast({ message: 'Education deleted successfully', type: 'success' });
 
 			if (onClose) {
 				onClose();

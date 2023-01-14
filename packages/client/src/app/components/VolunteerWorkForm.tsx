@@ -64,7 +64,7 @@ export default function VolunteerWorkForm({ volunteerWork, onClose }: VolunteerF
 			await api.deleteVolunteerWork(volunteerWork.id);
 			queryClient.invalidateQueries(['volunteer-work']);
 			queryClient.invalidateQueries(['userCounts']);
-			addToast({ message: 'Volunteer deleted successfully', type: 'info' });
+			addToast({ message: 'Volunteer deleted successfully', type: 'success' });
 
 			if (onClose) {
 				onClose();

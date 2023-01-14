@@ -64,7 +64,7 @@ export default function ExperienceForm({ experience, onClose }: ExperienceFormPr
 			await api.deleteExperience(experience.id);
 			queryClient.invalidateQueries(['experiences']);
 			queryClient.invalidateQueries(['userCounts']);
-			addToast({ message: 'Experience deleted successfully', type: 'info' });
+			addToast({ message: 'Experience deleted successfully', type: 'success' });
 
 			if (onClose) {
 				onClose();

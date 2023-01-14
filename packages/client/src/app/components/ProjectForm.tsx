@@ -64,7 +64,7 @@ export default function ProjectForm({ project, onClose }: ProjectFormProps) {
 			await api.deleteProject(project.id);
 			queryClient.invalidateQueries(['projects']);
 			queryClient.invalidateQueries(['userCounts']);
-			addToast({ message: 'Project deleted successfully', type: 'info' });
+			addToast({ message: 'Project deleted successfully', type: 'success' });
 
 			if (onClose) {
 				onClose();

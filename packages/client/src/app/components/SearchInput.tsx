@@ -1,3 +1,4 @@
+import SearchIcon from '../icons/SearchIcon';
 import Input from './Input';
 
 interface SearchInputProps {
@@ -9,9 +10,7 @@ export default function SearchInput({ value, onChange }: SearchInputProps) {
 	return (
 		<div className='input-group input-group-sm'>
 			<span className='bg-base-200 btn-sm'>
-				<svg xmlns='http://www.w3.org/2000/svg' className='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-					<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
-				</svg>
+				<SearchIcon />
 			</span>
 			<Input size='sm' className='input-sm' value={value} onChange={onChange} type='text' placeholder='Search…' />
 		</div>

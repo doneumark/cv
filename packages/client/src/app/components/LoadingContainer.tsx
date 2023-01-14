@@ -19,6 +19,7 @@ export default function LoadingContainer({ isLoading, height, children }: Loadin
 
 	return (
 		<AnimateHeight duration={ANIMATION_DURATION} height={isLoading ? height : 'auto'} className='relative'>
+			{ children }
 			{
 				transitions((opacityStyle, isShow) => (
 					isShow && (
@@ -26,12 +27,13 @@ export default function LoadingContainer({ isLoading, height, children }: Loadin
 							className='absolute right-0 left-0 top-0 bottom-0 bg-base-100'
 							style={opacityStyle}
 						>
-							<Spinner />
+							<div style={{ height }}>
+								<Spinner />
+							</div>
 						</animated.div>
 					)
 				))
 			}
-			{ children }
 		</AnimateHeight>
 	);
 }
