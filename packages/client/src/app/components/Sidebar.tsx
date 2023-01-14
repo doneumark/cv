@@ -83,7 +83,7 @@ export default function Sidebar() {
 				</li>
 				<li>
 					<SidebarLink
-						to='/generate-cv'
+						to='/cvs/new'
 						text='Generate CV'
 						icon={<CvIcon />}
 					/>
@@ -110,12 +110,12 @@ export default function Sidebar() {
 								<li>
 									<SidebarLink to='/volunteer' text='Volunteer' number={userCounts.volunteerWorks} />
 								</li>
-								<li>
-									<SidebarLink to='/cvs' text='CVs' />
-								</li>
 								<li />
 								<li>
 									<SidebarLink to='/jobs' text='Jobs' number={userCounts.jobs} />
+								</li>
+								<li>
+									<SidebarLink to='/cvs' text='CVs' />
 								</li>
 							</>
 						) : (
