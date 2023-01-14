@@ -29,9 +29,11 @@ ExperienceRouter.get('/', authenticate, async (req: AuthRequest, res) => {
 			where: {
 				userId: req.user.id,
 			},
-			orderBy: {
-				createdAt: 'desc',
-			},
+			orderBy: [
+				{ startsAtYear: 'desc' },
+				{ startsAtMonth: 'desc' },
+				{ startsAtDay: 'desc' },
+			],
 		});
 
 		res.status(200).send(experiences);
