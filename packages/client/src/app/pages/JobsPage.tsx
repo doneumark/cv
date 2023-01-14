@@ -55,10 +55,12 @@ function UpdateJobModal() {
 	);
 }
 
-export default function Jobs() {
+function Jobs() {
 	const navigate = useNavigate();
 	const [search, setSearch] = useState('');
-	const { data: jobs, isInitialLoading } = useQuery({
+	const {
+		data: jobs, isInitialLoading, isSuccess, error,
+	} = useQuery({
 		queryKey: ['jobs'],
 		queryFn: api.getJobs,
 	});
@@ -69,33 +71,50 @@ export default function Jobs() {
 	);
 
 	return (
-		<>
-			<PageTitle title='Jobs' />
-			<PageContent>
-				<LoadingContainer height={200} isLoading={isInitialLoading}>
-					<div className='space-y-6'>
-						<div className='flex justify-between'>
-							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
-							<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
-								<PlusIcon />
-								Add Job
-							</Button>
-						</div>
-
-						<div className='space-y-3'>
-							{ filteredJobs.map((job) => (
-								<BoxLink to={job.id} key={`job-box-${job.id}`}>
-									<JobBox job={job} />
-								</BoxLink>
-							)) }
-							{ !filteredJobs.length && (
+		<LoadingContainer height={200} isLoading={isInitialLoading}>
+			<div className='space-y-6'>
+				<div className='flex justify-between'>
+					<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+					<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
+						<PlusIcon />
+						Add Job
+					</Button>
+				</div>
+				{
+					isSuccess && (
+						filteredJobs.length > 0
+							? (
+								<div className='space-y-3'>
+									{ filteredJobs.map((job) => (
+										<BoxLink to={job.id} key={`job-box-${job.id}`}>
+											<JobBox job={job} />
+										</BoxLink>
+									)) }
+								</div>
+							)
+							: (
 								<div className='text-center'>
 									No jobs added yet
 								</div>
-							)}
-						</div>
+							)
+					)
+				}
+				{ error ? (
+					<div className='text-center text-error'>
+						{ error instanceof Error ? error.message : 'Unknown Error' }
 					</div>
-				</LoadingContainer>
+				) : null }
+			</div>
+		</LoadingContainer>
+	);
+}
+
+export default function JobsPage() {
+	return (
+		<>
+			<PageTitle title='Jobs' />
+			<PageContent>
+				<Jobs />
 			</PageContent>
 			<CreateJobModal />
 			<UpdateJobModal />

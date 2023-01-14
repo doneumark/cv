@@ -55,10 +55,12 @@ function UpdateEducationModal() {
 	);
 }
 
-export default function Educations() {
+function Educations() {
 	const navigate = useNavigate();
 	const [search, setSearch] = useState('');
-	const { data: educations, isInitialLoading } = useQuery({
+	const {
+		data: educations, isInitialLoading, isSuccess, error,
+	} = useQuery({
 		queryKey: ['educations'],
 		queryFn: api.getEducations,
 	});
@@ -69,33 +71,50 @@ export default function Educations() {
 	);
 
 	return (
-		<>
-			<PageTitle title='Educations' />
-			<PageContent>
-				<LoadingContainer height={200} isLoading={isInitialLoading}>
-					<div className='space-y-6'>
-						<div className='flex justify-between'>
-							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
-							<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
-								<PlusIcon />
-								Add Education
-							</Button>
-						</div>
-
-						<div className='space-y-3'>
-							{ filteredEducations.map((education) => (
-								<BoxLink to={education.id} key={`education-box-${education.id}`}>
-									<EducationBox extended education={education} />
-								</BoxLink>
-							)) }
-							{ !filteredEducations.length && (
+		<LoadingContainer height={200} isLoading={isInitialLoading}>
+			<div className='space-y-6'>
+				<div className='flex justify-between'>
+					<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+					<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
+						<PlusIcon />
+						Add Education
+					</Button>
+				</div>
+				{
+					isSuccess && (
+						filteredEducations.length > 0
+							? (
+								<div className='space-y-3'>
+									{ filteredEducations.map((education) => (
+										<BoxLink to={education.id} key={`education-box-${education.id}`}>
+											<EducationBox extended education={education} />
+										</BoxLink>
+									)) }
+								</div>
+							)
+							: (
 								<div className='text-center'>
 									No educations added yet
 								</div>
-							)}
-						</div>
+							)
+					)
+				}
+				{ error ? (
+					<div className='text-center text-error'>
+						{ error instanceof Error ? error.message : 'Unknown Error' }
 					</div>
-				</LoadingContainer>
+				) : null }
+			</div>
+		</LoadingContainer>
+	);
+}
+
+export default function EducationsPage() {
+	return (
+		<>
+			<PageTitle title='Educations' />
+			<PageContent>
+				<Educations />
 			</PageContent>
 			<CreateEducationModal />
 			<UpdateEducationModal />

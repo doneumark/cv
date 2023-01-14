@@ -15,7 +15,7 @@ import { useFormRoute } from '../services/routes';
 import BoxLink from '../components/BoxLinkContainer';
 import VolunteerWorkBox from '../components/VolunteerWorkBox';
 
-function CreateVolunteerModal() {
+function CreateVolunteerWorkModal() {
 	const { isCreatePath, rootPath: volunteersPath } = useFormRoute();
 	const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ function CreateVolunteerModal() {
 	);
 }
 
-function UpdateVolunteerModal() {
+function UpdateVolunteerWorkModal() {
 	const { isUpdatePath, pathParam: volunteerWorkId, rootPath: volunteersPath } = useFormRoute();
 	const navigate = useNavigate();
 
@@ -55,10 +55,12 @@ function UpdateVolunteerModal() {
 	);
 }
 
-export default function Volunteers() {
+function VolunteerWorks() {
 	const navigate = useNavigate();
 	const [search, setSearch] = useState('');
-	const { data: volunteerWorks, isInitialLoading } = useQuery({
+	const {
+		data: volunteerWorks, isInitialLoading, isSuccess, error,
+	} = useQuery({
 		queryKey: ['volunteer-works'],
 		queryFn: api.getVolunteerWorks,
 	});
@@ -69,35 +71,53 @@ export default function Volunteers() {
 	);
 
 	return (
-		<>
-			<PageTitle title='Volunteers' />
-			<PageContent>
-				<LoadingContainer height={200} isLoading={isInitialLoading}>
-					<div className='space-y-6'>
-						<div className='flex justify-between'>
-							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
-							<Button size='sm' color='primary' type='submit' onClick={() => navigate('new')}>
-								<PlusIcon />
-								Add Volunteer
-							</Button>
-						</div>
-						<div className='space-y-3'>
-							{ filteredVolunteerWorks.map((volunteerWork) => (
-								<BoxLink to={volunteerWork.id} key={`volunteer-box-${volunteerWork.id}`}>
-									<VolunteerWorkBox extended volunteerWork={volunteerWork} />
-								</BoxLink>
-							)) }
-							{ !filteredVolunteerWorks.length && (
+		<LoadingContainer height={200} isLoading={isInitialLoading}>
+			<div className='space-y-6'>
+				<div className='flex justify-between'>
+					<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+					<Button size='sm' color='primary' type='submit' onClick={() => navigate('new')}>
+						<PlusIcon />
+						Add Volunteer
+					</Button>
+				</div>
+				{
+					isSuccess && (
+						filteredVolunteerWorks.length > 0
+							? (
+								<div className='space-y-3'>
+									{ filteredVolunteerWorks.map((volunteerWork) => (
+										<BoxLink to={volunteerWork.id} key={`volunteer-box-${volunteerWork.id}`}>
+											<VolunteerWorkBox extended volunteerWork={volunteerWork} />
+										</BoxLink>
+									)) }
+								</div>
+							)
+							: (
 								<div className='text-center'>
 									No volunteers added yet
 								</div>
-							)}
-						</div>
+							)
+					)
+				}
+				{ error ? (
+					<div className='text-center text-error'>
+						{ error instanceof Error ? error.message : 'Unknown Error' }
 					</div>
-				</LoadingContainer>
+				) : null }
+			</div>
+		</LoadingContainer>
+	);
+}
+
+export default function VolunteerPage() {
+	return (
+		<>
+			<PageTitle title='Volunteers' />
+			<PageContent>
+				<VolunteerWorks />
 			</PageContent>
-			<CreateVolunteerModal />
-			<UpdateVolunteerModal />
+			<CreateVolunteerWorkModal />
+			<UpdateVolunteerWorkModal />
 		</>
 	);
 }

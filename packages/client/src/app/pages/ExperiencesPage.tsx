@@ -55,10 +55,12 @@ function UpdateExperienceModal() {
 	);
 }
 
-export default function Experiences() {
+function Experiences() {
 	const navigate = useNavigate();
 	const [search, setSearch] = useState('');
-	const { data: experiences, isInitialLoading } = useQuery({
+	const {
+		data: experiences, isInitialLoading, error, isSuccess,
+	} = useQuery({
 		queryKey: ['experiences'],
 		queryFn: api.getExperiences,
 	});
@@ -69,33 +71,50 @@ export default function Experiences() {
 	);
 
 	return (
-		<>
-			<PageTitle title='Experiences' />
-			<PageContent>
-				<LoadingContainer height={200} isLoading={isInitialLoading}>
-					<div className='space-y-6'>
-						<div className='flex justify-between'>
-							<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
-							<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
-								<PlusIcon />
-								Add Experience
-							</Button>
-						</div>
-
-						<div className='space-y-3'>
-							{ filteredExperiences.map((experience) => (
-								<BoxLink to={experience.id} key={`experience-box-${experience.id}`}>
-									<ExperienceBox extended experience={experience} />
-								</BoxLink>
-							)) }
-							{ !filteredExperiences.length && (
+		<LoadingContainer height={200} isLoading={isInitialLoading}>
+			<div className='space-y-6'>
+				<div className='flex justify-between'>
+					<SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+					<Button size='sm' color='secondary' type='submit' className='gap-2' onClick={() => navigate('new')}>
+						<PlusIcon />
+						Add Experience
+					</Button>
+				</div>
+				{
+					isSuccess && (
+						filteredExperiences.length > 0
+							? (
+								<div className='space-y-3'>
+									{ filteredExperiences.map((experience) => (
+										<BoxLink to={experience.id} key={`experience-box-${experience.id}`}>
+											<ExperienceBox extended experience={experience} />
+										</BoxLink>
+									)) }
+								</div>
+							)
+							: (
 								<div className='text-center'>
 									No experiences added yet
 								</div>
-							)}
-						</div>
+							)
+					)
+				}
+				{ error ? (
+					<div className='text-center text-error'>
+						{ error instanceof Error ? error.message : 'Unknown Error' }
 					</div>
-				</LoadingContainer>
+				) : null }
+			</div>
+		</LoadingContainer>
+	);
+}
+
+export default function ExperiencesPage() {
+	return (
+		<>
+			<PageTitle title='Experiences' />
+			<PageContent>
+				<Experiences />
 			</PageContent>
 			<CreateExperienceModal />
 			<UpdateExperienceModal />
