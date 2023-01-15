@@ -7,6 +7,7 @@ const getPermittedEducationData = (data: Education) => {
 	const {
 		field, grade, school, degreeName, description, endsAtDay, endsAtMonth,
 		endsAtYear, startsAtDay, startsAtMonth, startsAtYear,
+		isSelected,
 	} = data;
 	return {
 		field,
@@ -20,6 +21,7 @@ const getPermittedEducationData = (data: Education) => {
 		startsAtDay,
 		startsAtMonth,
 		startsAtYear,
+		isSelected,
 	};
 };
 

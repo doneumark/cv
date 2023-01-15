@@ -48,7 +48,7 @@ export default function Router() {
 				)}
 			/>
 			<Route
-				path='/cvs/new'
+				path='/cvs/new/*'
 				element={(
 					<ProtectedRoute>
 						<GenerateCvPage />

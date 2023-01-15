@@ -7,6 +7,7 @@ const getPermittedExperienceData = (data: Experience) => {
 	const {
 		title, description, company, endsAtDay, endsAtMonth,
 		endsAtYear, startsAtDay, startsAtMonth, startsAtYear,
+		isSelected,
 	} = data;
 	return {
 		title,
@@ -18,6 +19,7 @@ const getPermittedExperienceData = (data: Experience) => {
 		startsAtDay,
 		startsAtMonth,
 		startsAtYear,
+		isSelected,
 	};
 };
 

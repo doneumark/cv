@@ -27,8 +27,10 @@ export function App() {
 			try {
 				const user = await api.auth();
 				setUser(user);
+				return user;
 			} catch (err) {
 				setUser(null);
+				return null;
 			}
 		},
 		refetchOnWindowFocus: false,
@@ -40,6 +42,7 @@ export function App() {
 		queryFn: async () => {
 			const userCounts = await api.getUserCounts();
 			setUserCounts(userCounts);
+			return userCounts;
 		},
 	});
 

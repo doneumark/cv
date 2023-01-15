@@ -7,6 +7,7 @@ const getPermittedProjectData = (data: Project) => {
 	const {
 		title, description, endsAtDay, endsAtMonth,
 		endsAtYear, startsAtDay, startsAtMonth, startsAtYear,
+		isSelected,
 	} = data;
 	return {
 		title,
@@ -17,6 +18,7 @@ const getPermittedProjectData = (data: Project) => {
 		startsAtDay,
 		startsAtMonth,
 		startsAtYear,
+		isSelected,
 	};
 };
 

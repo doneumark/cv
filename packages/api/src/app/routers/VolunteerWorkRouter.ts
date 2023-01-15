@@ -7,6 +7,7 @@ const getPermittedVolunteerWorkData = (data: VolunteerWork) => {
 	const {
 		title, description, cause, company, endsAtDay, endsAtMonth,
 		endsAtYear, startsAtDay, startsAtMonth, startsAtYear,
+		isSelected,
 	} = data;
 	return {
 		title,
@@ -19,6 +20,7 @@ const getPermittedVolunteerWorkData = (data: VolunteerWork) => {
 		startsAtDay,
 		startsAtMonth,
 		startsAtYear,
+		isSelected,
 	};
 };
 
