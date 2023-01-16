@@ -1,37 +1,16 @@
-import { useCallback, useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+import { useEffect } from 'react';
 import { useTransition, animated, SpringValue } from '@react-spring/web';
 import { clsx } from 'clsx';
-import ToastsState, { Toast } from '../state/ToastsState';
-
-const generateRandomId = () => Math.floor((1 + Math.random()) * 0x10000)
-	.toString(16)
-	.substring(1);
-
-type ToastToCreateType = Omit<Toast, keyof { id: string; }>;
-
-export function useToast() {
-	const [, setToasts] = useRecoilState(ToastsState);
-
-	const addToast = useCallback((toast: ToastToCreateType) => {
-		const newToast: Toast = { id: generateRandomId(), ...toast };
-		setToasts((toasts) => [newToast, ...toasts]);
-
-		return newToast;
-	}, [setToasts]);
-
-	const removeToast = useCallback((toast: Toast) => {
-		setToasts((toasts) => (
-			toasts.filter((t) => t.id !== toast.id)
-		));
-	}, [setToasts]);
-
-	return { addToast, removeToast };
-}
+import { Toast, useToastsStore } from '../stores/ToastsStore';
 
 interface ToastElementInterface {
 	toast: Toast;
-	style: { opacity: SpringValue<number> };
+	style: {
+		opacity: SpringValue<number>;
+		height: SpringValue<string>;
+		paddingTop: SpringValue<string>;
+		paddingBottom: SpringValue<string>;
+	};
 }
 
 const alertClasses = {
@@ -65,7 +44,7 @@ const alertIcons = {
 };
 
 function ToastElement({ toast, style }: ToastElementInterface) {
-	const { removeToast } = useToast();
+	const { removeToast } = useToastsStore();
 
 	useEffect(() => {
 		const toastTimeout = setTimeout(() => {
@@ -98,8 +77,8 @@ function ToastElement({ toast, style }: ToastElementInterface) {
 	);
 }
 
-export function ToastContainer() {
-	const [toasts] = useRecoilState(ToastsState);
+export function ToastsContainer() {
+	const { toasts } = useToastsStore();
 
 	const transitions = useTransition(toasts, {
 		from: {

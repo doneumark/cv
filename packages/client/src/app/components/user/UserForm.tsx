@@ -7,7 +7,7 @@ import Button from '../Button';
 import Input from '../Input';
 import Label from '../Label';
 import OutlineSaveIcon from '../../icons/OutlineSaveIcon';
-import { useToast } from '../../services/toasts';
+import { useToastsStore } from '../../stores/ToastsStore';
 
 interface UserFormProps {
 	user?: User,
@@ -20,7 +20,7 @@ export default function UserForm({ user }: UserFormProps) {
 		formState: { isDirty, isSubmitting },
 		reset,
 	} = useForm({ defaultValues: user });
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 
 	useEffect(() => reset(user), [user, reset]);
 

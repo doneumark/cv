@@ -7,7 +7,7 @@ import Button from '../Button';
 import Input from '../Input';
 import Label from '../Label';
 import OutlineSaveIcon from '../../icons/OutlineSaveIcon';
-import { useToast } from '../../services/toasts';
+import { useToastsStore } from '../../stores/ToastsStore';
 
 export interface JobFormProps {
 	job?: Job;
@@ -23,7 +23,7 @@ export default function JobForm({ job, onClose }: JobFormProps) {
 	} = useForm({ defaultValues: job });
 
 	const queryClient = useQueryClient();
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	useEffect(() => reset(job), [job, reset]);

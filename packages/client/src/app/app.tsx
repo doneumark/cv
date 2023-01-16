@@ -1,15 +1,12 @@
-import { useRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
-
-// import clsx from 'clsx';
-import UserState from './state/UserState';
-import UserCountsState from './state/UserCountsState';
+import { useUserStore } from './stores/UserStore';
+import { useUserCountsStore } from './stores/UserCountsStore';
 import Input from './components/Input';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Router from './components/Router';
 import Spinner from './components/Spinner';
-import { ToastContainer } from './services/toasts';
+import { ToastsContainer } from './components/ToastsContainer';
 import * as api from './services/api';
 
 // icons: https://tailwindcss.com/blog/heroicons-v1
@@ -18,18 +15,18 @@ import * as api from './services/api';
 // examples: https://www.creative-tim.com/templates/tailwind-dashboard
 
 export function App() {
-	const [user, setUser] = useRecoilState(UserState);
-	const [, setUserCounts] = useRecoilState(UserCountsState);
+	const { user, login, logout } = useUserStore();
+	const { setUserCounts } = useUserCountsStore();
 
 	const { isInitialLoading: isLoadingAuth } = useQuery({
 		queryKey: ['me'],
 		queryFn: async () => {
 			try {
 				const resUser = await api.auth();
-				setUser(resUser);
+				login(resUser);
 				return resUser;
 			} catch (err) {
-				setUser(null);
+				logout();
 				return null;
 			}
 		},
@@ -72,7 +69,7 @@ export function App() {
 					<Sidebar />
 				</div>
 			</div>
-			<ToastContainer />
+			<ToastsContainer />
 		</div>
 	);
 }

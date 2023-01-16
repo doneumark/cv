@@ -8,7 +8,7 @@ import Input from '../Input';
 import Label from '../Label';
 import StartsAtEndsAtInput from '../StartsAtEndsAtInput';
 import OutlineSaveIcon from '../../icons/OutlineSaveIcon';
-import { useToast } from '../../services/toasts';
+import { useToastsStore } from '../../stores/ToastsStore';
 
 export interface VolunteerFormProps {
 	volunteerWork?: VolunteerWork;
@@ -25,7 +25,7 @@ export default function VolunteerWorkForm({ volunteerWork, onClose }: VolunteerF
 	} = useForm({ defaultValues: volunteerWork });
 
 	const queryClient = useQueryClient();
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	useEffect(() => reset(volunteerWork), [volunteerWork, reset]);

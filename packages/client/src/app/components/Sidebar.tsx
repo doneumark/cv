@@ -1,9 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
-import { useRecoilState } from 'recoil';
 import { useEffect, useState } from 'react';
-import UserState from '../state/UserState';
-import UserCountsState from '../state/UserCountsState';
+import { useUserStore } from '../stores/UserStore';
+import { useUserCountsStore } from '../stores/UserCountsStore';
 import SearchIcon from '../icons/SearchIcon';
 import SyncIcon from '../icons/SyncIcon';
 import CvIcon from '../icons/CvIcon';
@@ -53,8 +52,8 @@ function SidebarLink({
 }
 
 export default function Sidebar() {
-	const [user] = useRecoilState(UserState);
-	const [userCounts] = useRecoilState(UserCountsState);
+	const { user } = useUserStore();
+	const { userCounts } = useUserCountsStore();
 
 	return (
 		<aside className='bg-base-200 w-80 border-base-300 border-r'>

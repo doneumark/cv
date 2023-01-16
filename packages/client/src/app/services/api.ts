@@ -2,7 +2,7 @@ import {
 	User, Profile, Experience, Job, Education, Project, VolunteerWork,
 } from '@cv/api/interface';
 import axios from 'axios';
-import { UserCounts } from '../state/UserCountsState';
+import { UserCounts } from '../stores/UserCountsStore';
 
 const axiosApi = axios.create({
 	baseURL: '/api/',

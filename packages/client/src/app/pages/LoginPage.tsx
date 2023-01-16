@@ -1,15 +1,15 @@
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useUserStore } from '../stores/UserStore';
+
 import * as api from '../services/api';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import UserState from '../state/UserState';
 import PageTitle from '../components/PageTitle';
 import PageContent from '../components/PageContent';
 
 export default function LoginPage() {
-	const [user, setUser] = useRecoilState(UserState);
+	const { user, login } = useUserStore();
 
 	const {
 		register,
@@ -26,10 +26,10 @@ export default function LoginPage() {
 		return <Navigate to='/' />;
 	}
 
-	const login = handleSubmit(async (data) => {
+	const loginToApi = handleSubmit(async (data) => {
 		try {
-			const loggedInUser = await api.login(data);
-			setUser(loggedInUser);
+			const apiLoggedInUser = await api.login(data);
+			login(apiLoggedInUser);
 		} catch (err) {
 			alert(err);
 		}
@@ -39,7 +39,7 @@ export default function LoginPage() {
 		<>
 			<PageTitle title='Log in' />
 			<PageContent>
-				<form onSubmit={login} className='space-y-6'>
+				<form onSubmit={loginToApi} className='space-y-6'>
 					{ errors.email && (
 						<label className='label'>
 							<span className='label-text-alt'>{ errors.email.message }</span>

@@ -11,7 +11,7 @@ import PageTitle from '../components/PageTitle';
 import Label from '../components/Label';
 import Input from '../components/Input';
 import OutlineImportIcon from '../icons/OutlineImportIcon';
-import { useToast } from '../services/toasts';
+import { useToastsStore } from '../stores/ToastsStore';
 
 interface SyncLinkedin {
 	linkedinUsername: string | null;
@@ -29,7 +29,7 @@ function SyncLinkedinForm({ user }: SyncLinkedinFormProps) {
 		formState: { isSubmitting },
 		reset,
 	} = useForm({ defaultValues });
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 
 	const queryClient = useQueryClient();
 

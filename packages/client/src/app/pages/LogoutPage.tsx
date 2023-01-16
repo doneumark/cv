@@ -1,16 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRecoilState } from 'recoil';
 import * as api from '../services/api';
 import Spinner from '../components/Spinner';
-import UserState from '../state/UserState';
+import { useUserStore } from '../stores/UserStore';
 
 export default function LogoutPage() {
-	const [, setUser] = useRecoilState(UserState);
+	const { logout } = useUserStore();
 
 	const { isLoading } = useQuery({
 		queryKey: ['logout'],
 		queryFn: api.logout,
-		onSuccess: () => setUser(null),
+		onSuccess: () => logout(),
 	});
 
 	if (isLoading) {

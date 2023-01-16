@@ -1,7 +1,6 @@
 import {
 	Route, Routes, Navigate, useLocation,
 } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 import ProfilePage from '../pages/ProfilePage';
 import ExperiencesPage from '../pages/ExperiencesPage';
 import ProjectsPage from '../pages/ProjectsPage';
@@ -14,7 +13,7 @@ import CvPage from '../pages/CvPage';
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import LogoutPage from '../pages/LogoutPage';
-import UserState from '../state/UserState';
+import { useUserStore } from '../stores/UserStore';
 import SyncPage from '../pages/SyncPage';
 import GenerateCvPage from '../pages/GenerateCvPage';
 
@@ -24,7 +23,7 @@ export interface ProtectedRoutesProps {
 
 function ProtectedRoute({ children }: ProtectedRoutesProps): React.ReactElement {
 	const location = useLocation();
-	const user = useRecoilValue(UserState);
+	const { user } = useUserStore();
 
 	if (!user) {
 		return <Navigate to='/login' state={{ from: location }} replace />;

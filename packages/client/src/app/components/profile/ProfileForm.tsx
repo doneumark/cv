@@ -7,7 +7,7 @@ import Button from '../Button';
 import Input from '../Input';
 import Label from '../Label';
 import OutlineSaveIcon from '../../icons/OutlineSaveIcon';
-import { useToast } from '../../services/toasts';
+import { useToastsStore } from '../../stores/ToastsStore';
 
 interface ProfileFormProps {
 	profile?: Profile,
@@ -21,7 +21,7 @@ export default function ProfileForm({ profile }: ProfileFormProps) {
 		reset,
 	} = useForm({ defaultValues: profile });
 
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 
 	useEffect(() => reset(profile), [profile, reset]);
 

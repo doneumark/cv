@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import UserState from '../state/UserState';
+import { useUserStore } from '../stores/UserStore';
 
 export default function Navbar() {
-	const [user] = useRecoilState(UserState);
+	const { user } = useUserStore();
 
 	return (
 		<div className='sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-all duration-100 bg-base-200 text-base-content border-base-300 border-b'>

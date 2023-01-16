@@ -8,7 +8,7 @@ import Input from '../Input';
 import Label from '../Label';
 import StartsAtEndsAtInput from '../StartsAtEndsAtInput';
 import OutlineSaveIcon from '../../icons/OutlineSaveIcon';
-import { useToast } from '../../services/toasts';
+import { useToastsStore } from '../../stores/ToastsStore';
 
 export interface ExperienceFormProps {
 	experience?: Experience;
@@ -25,7 +25,7 @@ export default function ExperienceForm({ experience, onClose }: ExperienceFormPr
 	} = useForm({ defaultValues: experience });
 
 	const queryClient = useQueryClient();
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	useEffect(() => reset(experience), [experience, reset]);

@@ -19,7 +19,7 @@ import ProjectBox from '../components/project/ProjectBox';
 import VolunteerWorkBox from '../components/volunteer-work/VolunteerWorkBox';
 import JobBox from '../components/job/JobBox';
 import Label from '../components/Label';
-import { useToast } from '../services/toasts';
+import { useToastsStore } from '../stores/ToastsStore';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 
@@ -128,7 +128,7 @@ function ProfileField({ profile }: { profile?: Profile }) {
 }
 
 function ExperienceField({ experiences }: { experiences?: Experience[] }) {
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 
 	return (
 		<CheckboxForm
@@ -160,7 +160,7 @@ function ExperienceField({ experiences }: { experiences?: Experience[] }) {
 }
 
 function EducationField({ educations }: { educations?: Education[] }) {
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 
 	return (
 		<CheckboxForm
@@ -192,7 +192,7 @@ function EducationField({ educations }: { educations?: Education[] }) {
 }
 
 function ProjectField({ projects }: { projects?: Project[] }) {
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 
 	return (
 		<CheckboxForm
@@ -224,7 +224,7 @@ function ProjectField({ projects }: { projects?: Project[] }) {
 }
 
 function VolunteerField({ volunteerWorks }: { volunteerWorks?: VolunteerWork[] }) {
-	const { addToast } = useToast();
+	const { addToast } = useToastsStore();
 
 	return (
 		<CheckboxForm
@@ -385,12 +385,12 @@ export default function GenerateCvPage() {
 						path='generate'
 						element={(
 							<div style={{ height: 200 }}>
-								Generating CV ua39-asj3-asd3-asd3... (CV already craeted in db, just waiting for streaming of "finish")
+								Generating CV ua39-asj3-asd3-asd3...
+								(CV already craeted in db, just waiting for streaming of finish)
 								<Spinner />
 							</div>
 						)}
 					/>
-
 				</Routes>
 			</PageContent>
 		</>

@@ -1,17 +1,16 @@
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import { User } from '@cv/api/interface';
+import { useUserStore } from '../stores/UserStore';
 import * as api from '../services/api';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import UserState from '../state/UserState';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
 import Label from '../components/Label';
 
 export default function SignupPage() {
-	const [user, setUser] = useRecoilState(UserState);
+	const { user, login } = useUserStore();
 	const {
 		register,
 		handleSubmit,
@@ -24,7 +23,7 @@ export default function SignupPage() {
 	const signup = async (data: User) => {
 		try {
 			const signedUpUser = await api.signup(data);
-			setUser(signedUpUser);
+			login(signedUpUser);
 		} catch (err) {
 			alert(err);
 		}
