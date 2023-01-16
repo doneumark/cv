@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import clsx from 'clsx';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { useTransition, animated } from '@react-spring/web';
 import * as api from '../services/api';
 import PageContent from '../components/PageContent';
 import PageTitle from '../components/PageTitle';
@@ -20,6 +21,7 @@ import JobBox from '../components/job/JobBox';
 import Label from '../components/Label';
 import { useToast } from '../services/toasts';
 import Button from '../components/Button';
+import Spinner from '../components/Spinner';
 
 interface BoxInputProps {
 	children: React.ReactNode;
@@ -271,7 +273,6 @@ function JobField({ jobs }: { jobs?: Job[] }) {
 
 function UserData() {
 	const navigate = useNavigate();
-	const [showNextButton, setShowNextButton] = useState(false);
 
 	const [
 		{ data: experiences, isInitialLoading: isLoadingExperiences },
@@ -298,6 +299,13 @@ function UserData() {
 	|| isLoadingProject
 	|| isLoadingVolunteerWorks;
 
+	const [showNextButton, setShowNextButton] = useState(!isLoading);
+
+	const transitions = useTransition(showNextButton, {
+		from: { opacity: 0 },
+		enter: { opacity: 1 },
+	});
+
 	return (
 		<LoadingContainer
 			height={400}
@@ -311,18 +319,26 @@ function UserData() {
 				<ProjectField projects={projects} />
 				<VolunteerField volunteerWorks={volunteerWorks} />
 			</div>
-			{ showNextButton && (
-				<div className='flex -mb-6 -mr-6 -ml-6 p-6 justify-end sticky bottom-0 bg-base-100'>
-					<Button onClick={() => navigate('job')}>
-						Next
-					</Button>
-				</div>
-			) }
+			{
+				transitions((opacityStyle, isShow) => (
+					isShow && (
+						<animated.div
+							className='flex -mb-6 -mr-6 -ml-6 p-6 justify-end sticky bottom-0 bg-base-100'
+							style={opacityStyle}
+						>
+							<Button onClick={() => navigate('../job')}>
+								Next
+							</Button>
+						</animated.div>
+					)
+				))
+			}
 		</LoadingContainer>
 	);
 }
 
 export default function GenerateCvPage() {
+	const navigate = useNavigate();
 	const { data: jobs } = useQuery({
 		queryKey: ['jobs'],
 		queryFn: api.getJobs,
@@ -355,8 +371,26 @@ export default function GenerateCvPage() {
 					<Route
 						path='job'
 						element={(
-							<JobField jobs={jobs} />)}
+							<>
+								<JobField jobs={jobs} />
+								<div className='flex mt-6 justify-end'>
+									<Button onClick={() => navigate('../generate')}>
+										Next
+									</Button>
+								</div>
+							</>
+						)}
 					/>
+					<Route
+						path='generate'
+						element={(
+							<div style={{ height: 200 }}>
+								Generating CV ua39-asj3-asd3-asd3... (CV already craeted in db, just waiting for streaming of "finish")
+								<Spinner />
+							</div>
+						)}
+					/>
+
 				</Routes>
 			</PageContent>
 		</>
