@@ -8,9 +8,12 @@ interface LoadingContainerProps {
 	isLoading: boolean;
 	height: number;
 	children: React.ReactNode;
+	onAnimationEnd?: () => void;
 }
 
-export default function LoadingContainer({ isLoading, height, children }: LoadingContainerProps) {
+export default function LoadingContainer({
+	isLoading, height, children, onAnimationEnd,
+}: LoadingContainerProps) {
 	const transitions = useTransition(isLoading, {
 		enter: { opacity: 1 },
 		leave: { opacity: 0 },
@@ -18,7 +21,12 @@ export default function LoadingContainer({ isLoading, height, children }: Loadin
 	});
 
 	return (
-		<AnimateHeight duration={ANIMATION_DURATION} height={isLoading ? height : 'auto'} className='relative'>
+		<AnimateHeight
+			duration={ANIMATION_DURATION}
+			height={isLoading ? height : 'auto'}
+			className='relative'
+			onHeightAnimationEnd={onAnimationEnd}
+		>
 			{ children }
 			{
 				transitions((opacityStyle, isShow) => (

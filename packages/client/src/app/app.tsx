@@ -18,23 +18,22 @@ import * as api from './services/api';
 // examples: https://www.creative-tim.com/templates/tailwind-dashboard
 
 export function App() {
-	const [, setUser] = useRecoilState(UserState);
+	const [user, setUser] = useRecoilState(UserState);
 	const [, setUserCounts] = useRecoilState(UserCountsState);
 
 	const { isInitialLoading: isLoadingAuth } = useQuery({
 		queryKey: ['me'],
 		queryFn: async () => {
 			try {
-				const user = await api.auth();
-				setUser(user);
-				return user;
+				const resUser = await api.auth();
+				setUser(resUser);
+				return resUser;
 			} catch (err) {
 				setUser(null);
 				return null;
 			}
 		},
 		refetchOnWindowFocus: false,
-		refetchOnMount: false,
 	});
 
 	useQuery({
@@ -44,6 +43,8 @@ export function App() {
 			setUserCounts(userCounts);
 			return userCounts;
 		},
+		enabled: !!user,
+		refetchOnWindowFocus: false,
 	});
 
 	if (isLoadingAuth) {
