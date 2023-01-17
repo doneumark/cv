@@ -1,5 +1,5 @@
 import {
-	User, Profile, Experience, Job, Education, Project, VolunteerWork,
+	User, Profile, Experience, Job, Education, Project, VolunteerWork, Cv,
 } from '@cv/api/interface';
 import axios from 'axios';
 import { UserCounts } from '../stores/UserCountsStore';
@@ -51,3 +51,7 @@ export const createJob = (data: Job) => axiosApi.post<Job>('jobs', data).then((r
 export const getJob = (id: string) => axiosApi.get<Job>(`jobs/${id}`).then((res) => res.data);
 export const updateJob = (id: string, data: Partial<Job>) => axiosApi.put<Job>(`jobs/${id}`, data).then((res) => res.data);
 export const deleteJob = (id: string) => axiosApi.delete<Job>(`jobs/${id}`).then((res) => res.data);
+
+export const getCvs = () => axiosApi.get<Cv[]>('cvs').then((res) => res.data);
+export const createCv = (data: Partial<Cv>) => axiosApi.post<Cv>('cvs', data).then((res) => res.data);
+export const getCv = (id: string) => axiosApi.get<Cv>(`cvs/${id}`).then((res) => res.data);

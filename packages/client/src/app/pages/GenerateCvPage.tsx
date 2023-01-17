@@ -4,7 +4,7 @@ import {
 	Education, Experience, Job, Profile, Project, VolunteerWork,
 } from '@cv/api/interface';
 import {
-	Routes, Route, Navigate, useNavigate, NavLink,
+	Routes, Route, Navigate, useNavigate, NavLink, useParams,
 } from 'react-router-dom';
 import clsx from 'clsx';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
@@ -27,14 +27,15 @@ interface BoxInputProps {
 	children: React.ReactNode;
 	radio?: boolean
 	name: string;
-	value?: boolean;
+	value?: string | number;
+	checked?: boolean;
 }
 
 function BoxInput({
-	children, radio, name, value,
+	children, radio, name, value, checked,
 }: BoxInputProps) {
 	const formContext = useFormContext();
-	const formProps = (name && formContext?.register) ? formContext.register(name) : {};
+	const formProps = formContext?.register?.(name) || {};
 
 	return (
 		<div className='card card-bordered border-base-300'>
@@ -44,9 +45,9 @@ function BoxInput({
 						{
 							radio
 								? (
-									<input type='radio' checked={value} className='radio checkbox-primary radio-sm' {...formProps} />
+									<input type='radio' className='radio checkbox-primary radio-sm' {...formProps} value={value} />
 								) : (
-									<input type='checkbox' checked={value} className='checkbox checkbox-primary checkbox-sm' {...formProps} />
+									<input type='checkbox' className='checkbox checkbox-primary checkbox-sm' {...formProps} checked={checked} readOnly={checked} />
 								)
 						}
 						{ children }
@@ -119,7 +120,7 @@ function ProfileField({ profile }: { profile?: Profile }) {
 	return (
 		<div>
 			<Label text='Profile' />
-			<BoxInput value name='profileField'>
+			<BoxInput name='profileField' checked>
 				{ profile?.headline || null }
 				{ !profile && ('No profile written yet') }
 			</BoxInput>
@@ -261,7 +262,7 @@ function JobField({ jobs }: { jobs?: Job[] }) {
 			<Label text='Jobs' />
 			<div className='space-y-1.5'>
 				{ jobs?.map((job) => (
-					<BoxInput radio name='jobId' key={`job-box-${job.id}`}>
+					<BoxInput radio name='jobId' key={`job-box-${job.id}`} value={job.id}>
 						<JobBox job={job} />
 					</BoxInput>
 				)) || null }
@@ -271,7 +272,7 @@ function JobField({ jobs }: { jobs?: Job[] }) {
 	);
 }
 
-function UserData() {
+function UserStep() {
 	const navigate = useNavigate();
 
 	const [
@@ -337,7 +338,13 @@ function UserData() {
 	);
 }
 
-export default function GenerateCvPage() {
+interface JobStepFormValues {
+	jobId: string | null;
+}
+
+function JobStep() {
+	const { addToast } = useToastsStore();
+
 	const navigate = useNavigate();
 	const { data: jobs } = useQuery({
 		queryKey: ['jobs'],
@@ -345,52 +352,95 @@ export default function GenerateCvPage() {
 		refetchOnWindowFocus: false,
 	});
 
+	const methods = useForm<JobStepFormValues>({
+		defaultValues: {
+			jobId: null,
+		},
+	});
+	const { handleSubmit, formState } = methods;
+
+	const createCv = async (data: JobStepFormValues) => {
+		const { jobId } = data;
+		if (!jobId) {
+			addToast({ message: 'An error occurred while choosing a job', type: 'warning' });
+			return;
+		}
+
+		try {
+			const cv = await api.createCv({ jobId });
+			navigate(`../generate/${cv.id}`);
+		} catch (err) {
+			addToast({ message: err as string, type: 'warning' });
+		}
+	};
+
+	return (
+		<FormProvider {...methods}>
+			<form onSubmit={handleSubmit(createCv)}>
+				<JobField jobs={jobs} />
+				<div className='flex mt-6 justify-end'>
+					<Button type='submit' disabled={!formState.isDirty || formState.isSubmitting}>
+						Next
+					</Button>
+				</div>
+			</form>
+		</FormProvider>
+	);
+}
+
+function GenerateStep() {
+	const { cvId } = useParams();
+	const navigate = useNavigate();
+	const { data, refetch } = useQuery({
+		queryKey: ['cv', cvId],
+		queryFn: () => (cvId ? api.getCv(cvId) : null),
+		enabled: !!cvId,
+	});
+
+	useEffect(() => {
+		const interval = setInterval(refetch, 1000);
+		return () => {
+			clearInterval(interval);
+		};
+	}, [refetch]);
+
+	useEffect(() => {
+		if (!data?.text) {
+			return;
+		}
+
+		navigate(`../../${cvId}`);
+	}, [data?.text, navigate, cvId]);
+
+	if (!cvId) {
+		return <Navigate to='../job' />;
+	}
+
+	return (
+		<div style={{ height: 200 }}>
+			(CV is generating, just a moment...)
+			<Spinner />
+		</div>
+	);
+}
+
+export default function GenerateCvPage() {
 	return (
 		<>
 			<PageTitle title='Generate CV' />
 			<PageContent>
 				<div className='flex justify-center'>
-					<div className='steps w-2/5'>
-						<NavLink className={({ isActive }) => clsx(['step', isActive && 'step-primary'])} to='you'>
-							You
-						</NavLink>
-						<NavLink className={({ isActive }) => clsx(['step', isActive && 'step-primary'])} to='job'>
-							Job
-						</NavLink>
-						<NavLink className={({ isActive }) => clsx(['step', isActive && 'step-primary'])} to='generate'>
-							Generate
-						</NavLink>
-					</div>
+					<ul className='steps w-2/5'>
+						<NavLink className={({ isActive }) => clsx(['step', isActive && 'step-primary'])} to='you'>You</NavLink>
+						<NavLink className={({ isActive }) => clsx(['step', isActive && 'step-primary'])} to='job'>Job</NavLink>
+						<NavLink className={({ isActive }) => clsx(['step', isActive && 'step-primary'])} to='generate'>Generate</NavLink>
+					</ul>
 				</div>
 				<Routes>
 					<Route path='/' element={<Navigate to='you' />} />
-					<Route
-						path='you'
-						element={<UserData />}
-					/>
-					<Route
-						path='job'
-						element={(
-							<>
-								<JobField jobs={jobs} />
-								<div className='flex mt-6 justify-end'>
-									<Button onClick={() => navigate('../generate')}>
-										Next
-									</Button>
-								</div>
-							</>
-						)}
-					/>
-					<Route
-						path='generate'
-						element={(
-							<div style={{ height: 200 }}>
-								Generating CV ua39-asj3-asd3-asd3...
-								(CV already craeted in db, just waiting for streaming of finish)
-								<Spinner />
-							</div>
-						)}
-					/>
+					<Route path='you' element={<UserStep />} />
+					<Route path='job' element={<JobStep />} />
+					<Route path='generate/:cvId?' element={<GenerateStep />} />
 				</Routes>
 			</PageContent>
 		</>

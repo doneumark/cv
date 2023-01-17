@@ -42,7 +42,7 @@ export const run = () => {
 	app.use('/api/experiences', ExperienceRouter);
 	app.use('/api/volunteer-works', VolunteerWorkRouter);
 	app.use('/api/jobs', JobRouter);
-	app.use('/api/cv', CvRouter);
+	app.use('/api/cvs', CvRouter);
 
 	const port = process.env.port || 3333;
 	const server = app.listen(port, () => {
