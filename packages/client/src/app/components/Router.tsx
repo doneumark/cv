@@ -103,7 +103,7 @@ export default function Router() {
 				)}
 			/>
 			<Route
-				path='/cvs'
+				path='/cvs/*'
 				element={(
 					<ProtectedRoute>
 						<CvPage />

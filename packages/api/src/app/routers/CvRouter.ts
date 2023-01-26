@@ -2,11 +2,12 @@ import * as express from 'express';
 import { Cv } from '@prisma/client';
 import { authenticate, AuthRequest } from '../services/auth';
 import prisma from '../prisma';
+import CvService from '../services/CvService';
+
+// prisma.
 
 const getPermittedCvData = (data: Cv) => {
-	const {
-		jobId, text,
-	} = data;
+	const { jobId, text } = data;
 	return {
 		jobId,
 		text,
@@ -35,15 +36,10 @@ CvRouter.get('/', authenticate, async (req: AuthRequest, res) => {
 CvRouter.post('/', authenticate, async (req: AuthRequest, res) => {
 	try {
 		const permittedData = getPermittedCvData(req.body);
-
-		const newCv = await prisma.cv.create({
-			data: {
-				...permittedData,
-				userId: req.user.id,
-			},
+		const newCv = await CvService.createCv({
+			...permittedData,
+			userId: req.user.id,
 		});
-
-		// call (not with async) a function that generates the cv
 
 		res.status(200).send(newCv);
 	} catch (err) {

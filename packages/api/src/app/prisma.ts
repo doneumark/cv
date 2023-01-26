@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { getLinkedinDataFromUsername } from './services/linkedin';
+import openAi from './services/openAi';
 
 const prismaBase = new PrismaClient();
 
@@ -83,6 +84,40 @@ export default prismaBase.$extends({
 				needs: { password: true },
 				compute(user) {
 					return (password: string): boolean => (user.password === password);
+				},
+			},
+		},
+		cv: {
+			generateText: {
+				needs: { id: true, jobId: true, userId: true },
+				compute(cv) {
+					return async () => {
+						const { id, jobId, userId } = cv;
+						const [
+							job, profile, educations, experiences, projects, volunteerWorks,
+						] = await Promise.all([
+							prismaBase.job.findFirstOrThrow({ where: { id: jobId, userId } }),
+							prismaBase.profile.findUnique({ where: { userId } }),
+							prismaBase.education.findMany({ where: { isSelected: true, userId } }),
+							prismaBase.experience.findMany({ where: { isSelected: true, userId } }),
+							prismaBase.project.findMany({ where: { isSelected: true, userId } }),
+							prismaBase.volunteerWork.findMany({ where: { isSelected: true, userId } }),
+						]);
+
+						// const completion = await openAi.createCompletion({
+						// 	model: 'text-davinci-003',
+						// 	prompt: 'Hello world',
+						// 	max_tokens: 7,
+						// 	temperature: 0,
+						// });
+
+						return prismaBase.cv.update({
+							where: { id },
+							data: {
+								text: 'hiiii',
+							},
+						});
+					};
 				},
 			},
 		},

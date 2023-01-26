@@ -409,7 +409,7 @@ function GenerateStep() {
 			return;
 		}
 
-		navigate(`../../${cvId}`);
+		navigate(`/cvs/${cvId}`);
 	}, [data?.text, navigate, cvId]);
 
 	if (!cvId) {
